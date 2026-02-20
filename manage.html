@@ -30,7 +30,8 @@
       font-family: var(--font);
       background: var(--grey-bg);
       color: var(--black);
-      padding-bottom: 150px;
+      padding-bottom: 120px;
+      overflow-x: hidden;
     }
 
     /* LEVEL 1: HEADER/NAVIGATION */
@@ -79,12 +80,12 @@
     }
 
     .tab.active {
-      background: var(--white);
-      color: var(--blue);
+      background: #002665;
+      color: var(--white);
     }
 
-    /* REPORT COMPILER CARDS */
-    .compiler-section {
+    /* BOTHOflow COMPILER CARDS */
+    .compiler-card {
       background: var(--white);
       margin: 12px 16px;
       border-radius: 12px;
@@ -92,7 +93,7 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
-    .compiler-trigger {
+    .card-trigger {
       width: 100%;
       padding: 18px;
       background: var(--white);
@@ -100,29 +101,39 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 800;
       color: var(--black);
       cursor: pointer;
     }
 
-    .compiler-trigger .meta {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--blue);
-      text-transform: uppercase;
+    .trigger-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .compiler-body {
+    .month-btn {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--blue);
+      text-transform: uppercase;
+      border: 1px solid var(--blue);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .card-body {
       display: none;
-      padding: 0 0 12px;
+      padding: 0 0;
       border-top: 1px solid var(--grey-bg);
     }
 
-    .compiler-body.open {
+    .card-body.open {
       display: block;
     }
 
+    /* COMPILER ROWS */
     .compiler-row {
       display: flex;
       align-items: center;
@@ -135,63 +146,63 @@
       background: #f8faff;
     }
 
-    .sel-btn {
-      width: 24px;
-      height: 24px;
+    .select-btn {
+      width: 28px;
+      height: 28px;
       border: 2px solid var(--grey-mid);
-      border-radius: 6px;
+      border-radius: 8px;
       margin-right: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
+      flex-shrink: 0;
     }
 
-    .sel-btn.active {
+    .select-btn.on {
       background: var(--blue);
       border-color: var(--blue);
     }
 
-    .sel-btn.active::after {
+    .select-btn.on::after {
       content: '✓';
       color: #fff;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 900;
     }
 
-    .row-content {
+    .row-data {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 4px;
     }
 
-    .row-title {
+    .data-main {
       font-size: 14px;
       font-weight: 700;
     }
 
-    .row-sub {
+    .data-sub {
       font-size: 12px;
       color: var(--grey-text);
+      font-weight: 600;
     }
 
-    .row-badge {
+    .data-meta {
       font-size: 11px;
       font-weight: 800;
       color: var(--blue);
-      background: #eff6ff;
-      padding: 4px 8px;
-      border-radius: 12px;
     }
 
-    .compiler-actions {
+    /* OPTIONS BAR (BOTTOM OF EACH CARD) */
+    .card-options {
       display: flex;
       background: var(--blue);
       padding: 12px;
     }
 
-    .action-btn {
+    .opt-btn {
       flex: 1;
       background: transparent;
       border: none;
@@ -203,58 +214,75 @@
       text-align: center;
     }
 
-    .action-btn:not(:last-child) {
+    .opt-btn:not(:last-child) {
       border-right: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* BOTTOM NAVIGATION (FULL REPORT) */
-    .report-bar {
+    /* NESTED DRILL DOWN (FUEL) */
+    .nested-group {
+      background: #fdfdfd;
+      padding-left: 20px;
+      display: none;
+    }
+
+    .nested-group.open {
+      block;
+    }
+
+    /* REACTIVE BOTTOM NAV (FULL REPORT) */
+    .full-report-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       background: var(--black);
-      padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+      height: 80px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0 20px calc(0px + env(safe-area-inset-bottom));
       z-index: 2000;
-      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .hamburger {
       font-size: 24px;
       color: var(--white);
+      cursor: pointer;
     }
 
-    .report-status {
+    .report-info {
       color: var(--white);
-      font-weight: 800;
-      font-size: 14px;
+      text-align: center;
     }
 
-    .report-btns {
+    .report-count {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .report-actions {
       display: flex;
       gap: 8px;
     }
 
-    .rep-btn {
+    .report-btn {
       background: #333;
-      padding: 10px 16px;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
       border-radius: 8px;
-      color: var(--white);
       font-size: 12px;
       font-weight: 800;
-      border: none;
     }
 
-    .rep-btn.prime {
+    .report-btn.compile {
       background: var(--blue);
     }
 
-    /* MINI REPORT MODAL */
-    #miniReportView,
-    #fullReportView {
+    /* MODALS */
+    .modal {
       position: fixed;
       inset: 0;
       background: var(--white);
@@ -263,9 +291,32 @@
       flex-direction: column;
     }
 
+    .modal.open {
+      display: flex;
+    }
+
     .modal-header {
       background: #ededed;
-      padding: 20px;
+      padding: 24px 20px;
+    }
+
+    .modal-title-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 20px;
+      font-weight: 800;
+      outline: none;
+      margin-bottom: 8px;
+    }
+
+    .modal-desc-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--grey-text);
+      outline: none;
     }
 
     .modal-body {
@@ -280,14 +331,18 @@
       display: flex;
       justify-content: space-around;
     }
+
+    .nav-hidden {
+      transform: translateY(100%);
+    }
   </style>
 </head>
 
-<body>
+<body onscroll="handleScroll()">
 
   <header>
     <div class="header-top">
-      <h1>Manage Fleet</h1>
+      <h1>FMIS Manage</h1>
       <div id="userGreeting" style="font-size:12px; font-weight:600;"></div>
     </div>
     <div class="tab-bar">
@@ -296,268 +351,532 @@
     </div>
   </header>
 
-  <main id="compilerMain">
-    <!-- CARDS WILL BE GENERATED IN SCRIPT -->
+  <main id="compilerApp">
+    <!-- LEVEL 2: VEHICLE STATUS -->
+    <div class="compiler-card">
+      <button class="card-trigger" onclick="toggleCard('vehicles')">
+        <span>Vehicle - Status</span>
+        <div class="trigger-right">
+          <span class="month-btn" id="month-vehicles">Feb 2026</span>
+          <span id="arrow-vehicles">▼</span>
+        </div>
+      </button>
+      <div class="card-body" id="body-vehicles">
+        <div id="list-vehicles"></div>
+        <div class="card-options">
+          <div class="opt-btn" id="count-vehicles">0 Selected</div>
+          <div class="opt-btn" onclick="previewMini('vehicles')">Preview</div>
+          <div class="opt-btn" onclick="resetCard('vehicles')">Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL 3: FUEL ALLOCATION -->
+    <div class="compiler-card">
+      <button class="card-trigger" onclick="toggleCard('fuel')">
+        <span>Fuel Allocation</span>
+        <div class="trigger-right">
+          <span class="month-btn" id="month-fuel">Feb 2026</span>
+          <span id="arrow-fuel">▼</span>
+        </div>
+      </button>
+      <div class="card-body" id="body-fuel">
+        <div id="list-fuel"></div>
+        <div class="card-options">
+          <div class="opt-btn" id="count-fuel">0 Selected</div>
+          <div class="opt-btn" onclick="previewMini('fuel')">Preview</div>
+          <div class="opt-btn" onclick="resetCard('fuel')">Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL 4: STATIONS -->
+    <div class="compiler-card">
+      <button class="card-trigger" onclick="toggleCard('stations')">
+        <span>Stations</span>
+        <span id="arrow-stations">▼</span>
+      </button>
+      <div class="card-body" id="body-stations">
+        <div id="list-stations"></div>
+        <div class="card-options">
+          <div class="opt-btn" id="count-stations">0 Selected</div>
+          <div class="opt-btn" onclick="previewMini('stations')">Preview</div>
+          <div class="opt-btn" onclick="resetCard('stations')">Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL 5: TYRES -->
+    <div class="compiler-card">
+      <button class="card-trigger" onclick="toggleCard('tyres')">
+        <span>Tyres</span>
+        <div class="trigger-right">
+          <span class="month-btn" id="month-tyres">Feb 2026</span>
+          <span id="arrow-tyres">▼</span>
+        </div>
+      </button>
+      <div class="card-body" id="body-tyres">
+        <div id="list-tyres"></div>
+        <div class="card-options">
+          <div class="opt-btn" id="count-tyres">0 Selected</div>
+          <div class="opt-btn" onclick="previewMini('tyres')">Preview</div>
+          <div class="opt-btn" onclick="resetCard('tyres')">Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL 6: DRIVERS -->
+    <div class="compiler-card">
+      <button class="card-trigger" onclick="toggleCard('drivers')">
+        <span>Drivers</span>
+        <div class="trigger-right">
+          <span class="month-btn" id="month-drivers">Feb 2026</span>
+          <span id="arrow-drivers">▼</span>
+        </div>
+      </button>
+      <div class="card-body" id="body-drivers">
+        <div id="list-drivers"></div>
+        <div class="card-options">
+          <div class="opt-btn" id="count-drivers">0 Selected</div>
+          <div class="opt-btn" onclick="previewMini('drivers')">Preview</div>
+          <div class="opt-btn" onclick="resetCard('drivers')">Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL 7: ATTENTIONS -->
+    <div class="compiler-card">
+      <button class="card-trigger" onclick="toggleCard('attentions')">
+        <span>Attentions</span>
+        <div class="trigger-right">
+          <span class="month-btn" id="month-attentions">Feb 2026</span>
+          <span id="arrow-attentions">▼</span>
+        </div>
+      </button>
+      <div class="card-body" id="body-attentions">
+        <div id="list-attentions"></div>
+        <div class="card-options">
+          <div class="opt-btn" id="count-attentions">0 Selected</div>
+          <div class="opt-btn" onclick="previewMini('attentions')">Preview</div>
+          <div class="opt-btn" onclick="resetCard('attentions')">Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL 8: FLEET VIEW -->
+    <div class="compiler-card">
+      <button class="card-trigger" onclick="toggleCard('fleet')">
+        <span>Fleet View</span>
+        <div class="trigger-right">
+          <span class="month-btn" id="month-fleet">Feb 2026</span>
+          <span id="arrow-fleet">▼</span>
+        </div>
+      </button>
+      <div class="card-body" id="body-fleet">
+        <div id="list-fleet"></div>
+        <div class="card-options">
+          <div class="opt-btn" id="count-fleet">0 Selected</div>
+          <div class="opt-btn" onclick="previewMini('fleet')">Preview</div>
+          <div class="opt-btn" onclick="resetCard('fleet')">Reset</div>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <div class="report-bar" id="reportBar">
+  <!-- LEVEL 9: FULL REPORT BAR -->
+  <div class="full-report-bar" id="fullNav">
     <div class="hamburger">☰</div>
-    <div class="report-status" id="fullReportCount">0 Items Selected</div>
-    <div class="report-btns">
-      <button class="rep-btn" onclick="previewFull()">Preview</button>
-      <button class="rep-btn prime" onclick="saveFull()">Save</button>
+    <div class="report-info">
+      <div class="report-count" id="full-total-count">0 Items Selected</div>
+      <div style="font-size:10px; opacity:0.7">Full-Report Compilation</div>
+    </div>
+    <div class="report-actions">
+      <button class="report-btn" onclick="previewFull()">Preview</button>
+      <button class="report-btn compile" onclick="saveFull()">Compile</button>
     </div>
   </div>
 
-  <!-- MODALS -->
-  <div id="miniReportView">
+  <!-- MINI REPORT MODAL -->
+  <div class="modal" id="miniModal">
     <div class="modal-header">
-      <div style="font-size:12px; color:var(--grey-text); font-weight:700" id="miniDate">20 Feb 2026 - 10:20 AM</div>
-      <div style="font-size:10px; color:var(--blue); font-weight:800; margin:4px 0" id="miniId">REP-FUEL-GABS-001</div>
-      <input type="text" id="miniTitle" value="Mini-Report Title"
-        style="width:100%; border:none; background:transparent; font-size:18px; font-weight:800; outline:none">
-      <input type="text" id="miniDesc" value="Tap to edit report description..."
-        style="width:100%; border:none; background:transparent; font-size:13px; color:var(--grey-text); outline:none; margin-top:4px">
+      <div style="font-size:11px; color:var(--grey-text); font-weight:800; margin-bottom:4px;" id="miniMeta">20 Feb 2026
+        - 10:45 AM | ID: REP-AUTO-001</div>
+      <input type="text" class="modal-title-input" id="miniTitle" value="Mini-Report Title">
+      <input type="text" class="modal-desc-input" id="miniDesc"
+        placeholder="Add a description for this specific capture...">
     </div>
     <div class="modal-body" id="miniContent"></div>
     <div class="modal-footer">
-      <button class="rep-btn" onclick="closeModal('miniReportView')">Close</button>
-      <button class="rep-btn prime" onclick="addToFullReport()">Compile to Full</button>
+      <button class="report-btn" onclick="closeModal('miniModal')">Cancel</button>
+      <button class="report-btn" onclick="shareMini()">Share</button>
+      <button class="report-btn compile" onclick="compileToFull()">Save & Compile</button>
     </div>
   </div>
 
-  <div id="fullReportView">
+  <!-- FULL REPORT MODAL -->
+  <div class="modal" id="fullModal">
     <div class="modal-header">
-      <input type="text" id="fullTitle" value="Monthly Fleet Summary - Feb 2026"
-        style="width:100%; border:none; background:transparent; font-size:18px; font-weight:800; outline:none">
+      <input type="text" class="modal-title-input" id="fullTitle" value="Monthly Fleet Summary - Feb 2026">
+      <div style="font-size:12px; color:var(--blue); font-weight:800">Final Compilation</div>
     </div>
     <div class="modal-body" id="fullContent"></div>
     <div class="modal-footer">
-      <button class="rep-btn" onclick="closeModal('fullReportView')">Back</button>
-      <button class="rep-btn" onclick="shareReport()">Share WhatsApp</button>
-      <button class="rep-btn prime" onclick="saveReportFinal()">Save Final</button>
+      <button class="report-btn" onclick="closeModal('fullModal')">Back</button>
+      <button class="report-btn" onclick="shareFull()">WhatsApp</button>
+      <button class="report-btn compile" onclick="confirmFullSave()">Save Final</button>
     </div>
   </div>
 
   <script>
-    const State = {
-      selectedItems: {}, // sectionId -> Set of itemIds
-      miniReports: [],   // Array of { title, desc, items, date, section }
-      fullReport: [],    // Array of miniReport indices
-      currentSection: null
+    let lastScroll = 0;
+    let currentUser = null;
+
+    // Selection State: sectionKey -> Set of IDs
+    const Selections = {
+      vehicles: new Set(),
+      fuel: new Set(),
+      stations: new Set(),
+      tyres: new Set(),
+      drivers: new Set(),
+      attentions: new Set(),
+      fleet: new Set()
     };
 
-    const SECTIONS = [
-      { id: 'vehicles', label: 'Vehicle - Status', sub: 'Active/Inactive' },
-      { id: 'fuel', label: 'Fuel Allocation', sub: 'Litre Usage' },
-      { id: 'stations', label: 'Stations', sub: 'Deployment' },
-      { id: 'tyres', label: 'Tyres', sub: 'Wear & Inventory' },
-      { id: 'drivers', label: 'Drivers', sub: 'Status & Roles' },
-      { id: 'attention', label: 'Attentions', sub: 'Urgent Tasks' },
-      { id: 'fleet', label: 'Fleet View', sub: 'Number Plates' }
-    ];
+    const CompiledMiniReports = []; // Stores { title, desc, items, type, date }
 
     function init() {
       const userJson = sessionStorage.getItem('fmis_user');
       if (!userJson) { location.href = 'login.html'; return; }
-      const user = JSON.parse(userJson);
-      document.getElementById('userGreeting').textContent = `${user.first} ${user.last}`;
+      currentUser = JSON.parse(userJson);
+      if (currentUser.type !== 'manager' && currentUser.type !== 'admin') { location.href = 'index.html'; return; }
 
-      renderCompiler();
+      document.getElementById('userGreeting').textContent = `${currentUser.first} ${currentUser.last} · ${currentUser.role}`;
+
+      renderAllLists();
     }
 
-    function renderCompiler() {
-      const main = document.getElementById('compilerMain');
-      main.innerHTML = '';
+    // BOTHOFLOW CARD LOGIC
+    function toggleCard(id) {
+      const body = document.getElementById(`body-${id}`);
+      const arrow = document.getElementById(`arrow-${id}`);
+      const isOpen = body.classList.contains('open');
 
-      SECTIONS.forEach(sec => {
-        const container = document.createElement('div');
-        container.className = 'compiler-section';
-        container.innerHTML = `
-        <button class="compiler-trigger" onclick="toggleSection('${sec.id}')">
-          <div>
-            <div style="font-size:15px">${sec.label}</div>
-            <div style="font-size:11px; color:var(--grey-text); font-weight:600">${sec.sub}</div>
-          </div>
-          <div class="meta" id="count-${sec.id}">Feb 2026</div>
-        </button>
-        <div class="compiler-body" id="body-${sec.id}">
-          ${generateRows(sec.id)}
-          <div class="compiler-actions">
-            <div class="action-btn" id="sel-count-${sec.id}">0 Selected</div>
-            <div class="action-btn" onclick="previewMini('${sec.id}')">Preview</div>
-            <div class="action-btn" onclick="resetSection('${sec.id}')">Reset</div>
-          </div>
-        </div>
-      `;
-        main.appendChild(container);
+      // Smooth Bothoflow: close others
+      document.querySelectorAll('.card-body').forEach(b => b.classList.remove('open'));
+      document.querySelectorAll('[id^="arrow-"]').forEach(a => a.textContent = '▼');
+
+      if (!isOpen) {
+        body.classList.add('open');
+        arrow.textContent = '▲';
+      }
+    }
+
+    function renderAllLists() {
+      renderVehicles();
+      renderFuel();
+      renderStations();
+      renderTyres();
+      renderDrivers();
+      renderAttentions();
+      renderFleet();
+    }
+
+    // --- RENDERING MODULES ---
+
+    function renderVehicles() {
+      const list = document.getElementById('list-vehicles');
+      list.innerHTML = '';
+      const items = [
+        { id: 'v-today', title: 'Today', count: 8, sub: 'Updated 15 mins ago' },
+        { id: 'v-yest', title: 'Yesterday', count: 8, sub: 'Daily summary' },
+        { id: 'v-wed', title: 'Wed 18 Feb 2026', count: 7, sub: '1 Accident reported' },
+        { id: 'v-tue', title: 'Tue 17 Feb 2026', count: 8, sub: 'Full deployment' }
+      ];
+      items.forEach(item => {
+        list.appendChild(createRow('vehicles', item.id, item.title, `${item.count} Vehicles`, item.sub));
       });
     }
 
-    function generateRows(secId) {
-      let rows = '';
-      const date = new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: '2026' });
+    function renderFuel() {
+      const list = document.getElementById('list-fuel');
+      list.innerHTML = '';
+      const logs = DataManager.getFuel();
+      const dates = [...new Set(logs.map(l => l.date))].sort().reverse();
 
-      if (secId === 'vehicles' || secId === 'fleet') {
-        const vehicles = DataManager.getVehicles();
-        vehicles.forEach(v => {
-          const itemId = `${secId}-${v.id}`;
-          rows += `
-          <div class="compiler-row" onclick="toggleItem('${secId}', '${itemId}')">
-            <div class="sel-btn" id="btn-${itemId}"></div>
-            <div class="row-content">
-              <div class="row-title">${v.reg} — ${v.type}</div>
-              <div class="row-sub">${v.station} · ${v.color}</div>
-            </div>
-            <div class="row-badge">${(v.mileage / 1000).toFixed(1)}k</div>
-          </div>
-        `;
+      dates.forEach(date => {
+        const dayLogs = logs.filter(l => l.date === date);
+        const totalL = dayLogs.reduce((s, x) => s + x.litres, 0);
+        const totalP = dayLogs.reduce((s, x) => s + (x.litres * x.price), 0);
+        const dateId = `fuel-date-${date}`;
+
+        const row = createRow('fuel', dateId, date,
+          `${totalL.toFixed(1)}L | P${totalP.toFixed(2)} | for ${dayLogs.length} vehicles`,
+          'Tap to view vehicles');
+
+        // Wrap row to handle drill-down toggle
+        row.onclick = (e) => {
+          if (e.target.classList.contains('select-btn')) {
+            toggleItem('fuel', dateId);
+          } else {
+            const nested = document.getElementById(`nested-${date}`);
+            nested.style.display = nested.style.display === 'block' ? 'none' : 'block';
+          }
+        };
+        list.appendChild(row);
+
+        const nested = document.createElement('div');
+        nested.id = `nested-${date}`;
+        nested.className = 'nested-group';
+        dayLogs.forEach(log => {
+          const v = DataManager.getVehicles().find(veh => veh.id === log.vehicleId);
+          const subRow = createRow('fuel', log.id, v.reg, `${log.litres}L | P${(log.litres * log.price).toFixed(2)}`, `${log.time} at ${log.station}`);
+          nested.appendChild(subRow);
         });
-      } else if (secId === 'drivers') {
-        const users = DataManager.getUsers().filter(u => u.type === 'driver');
-        users.forEach(u => {
-          const itemId = `${secId}-${u.id}`;
-          rows += `
-          <div class="compiler-row" onclick="toggleItem('${secId}', '${itemId}')">
-            <div class="sel-btn" id="btn-${itemId}"></div>
-            <div class="row-content">
-              <div class="row-title">${u.first} ${u.last}</div>
-              <div class="row-sub">${u.role} · ${u.area}</div>
-            </div>
-            <div class="row-badge">${u.hasVehicle ? 'Active' : 'New'}</div>
-          </div>
-        `;
-        });
+        list.appendChild(nested);
+      });
+    }
+
+    function renderStations() {
+      const list = document.getElementById('list-stations');
+      list.innerHTML = '';
+      const stations = [
+        { id: 'st-ga', name: 'Gaborone Central', vCount: 12, dCount: 15 },
+        { id: 'st-fr', name: 'Francistown Depot', vCount: 8, dCount: 10 },
+        { id: 'st-mo', name: 'Molepolole Works', vCount: 5, dCount: 6 }
+      ];
+
+      stations.forEach(st => {
+        const id = `station-${st.id}`;
+        const row = createRow('stations', id, st.name, `${st.vCount} Vehicles | ${st.dCount} Drivers`, 'Tap to expand details');
+
+        row.onclick = (e) => {
+          if (e.target.classList.contains('select-btn')) {
+            toggleItem('stations', id);
+          } else {
+            const nested = document.getElementById(`nested-${st.id}`);
+            nested.style.display = nested.style.display === 'block' ? 'none' : 'block';
+          }
+        };
+        list.appendChild(row);
+
+        const nested = document.createElement('div');
+        nested.id = `nested-${st.id}`;
+        nested.className = 'nested-group';
+
+        // Mocking nested sub-rows for station
+        const sub1 = createRow('stations', `${st.id}-v`, `${st.name} Fleet`, 'All assigned vehicles', 'Active Status');
+        const sub2 = createRow('stations', `${st.id}-d`, `${st.name} Personnel`, 'All assigned drivers', 'Duty Roster');
+        nested.appendChild(sub1);
+        nested.appendChild(sub2);
+
+        list.appendChild(nested);
+      });
+    }
+
+    function renderTyres() {
+      const list = document.getElementById('list-tyres');
+      list.innerHTML = '';
+      const items = [
+        { id: 'ty-use', title: 'In Use', val: 32 },
+        { id: 'ty-stock', title: 'In Stock', val: 14 },
+        { id: 'ty-repl', title: 'Replaced (Month)', val: 4 },
+        { id: 'ty-punc', title: 'Punctures', val: 2 }
+      ];
+      items.forEach(item => {
+        list.appendChild(createRow('tyres', item.id, item.title, `${item.val} Units`, 'Tracking by Serial No.'));
+      });
+    }
+
+    function renderDrivers() {
+      const list = document.getElementById('list-drivers');
+      list.innerHTML = '';
+      const drivers = DataManager.getUsers().filter(u => u.type === 'driver');
+      const male = drivers.filter(d => d.gender === 'Male').length;
+      const female = drivers.filter(d => d.gender === 'Female').length;
+
+      list.appendChild(createRow('drivers', 'dr-all', 'Active Drivers', `${drivers.length} Registered`, 'All roles'));
+      list.appendChild(createRow('drivers', 'dr-male', 'Male Staff', `${male} Members`, 'Logistics'));
+      list.appendChild(createRow('drivers', 'dr-female', 'Female Staff', `${female} Members`, 'Administration'));
+    }
+
+    function renderAttentions() {
+      const list = document.getElementById('list-attentions');
+      list.innerHTML = '';
+      const atts = DataManager.getAttentions();
+      atts.forEach(a => {
+        const v = DataManager.getVehicles().find(v => v.id === a.vehicleId);
+        list.appendChild(createRow('attentions', a.id, `${v.reg} - ${a.type}`, a.details, a.status));
+      });
+    }
+
+    function renderFleet() {
+      const list = document.getElementById('list-fleet');
+      list.innerHTML = '';
+      const vehicles = DataManager.getVehicles();
+      vehicles.forEach(v => {
+        list.appendChild(createRow('fleet', v.id, v.reg, v.type, v.station));
+      });
+    }
+
+    // --- CORE UI GENERATOR ---
+    function createRow(secKey, id, title, sub, meta) {
+      const row = document.createElement('div');
+      row.className = 'compiler-row';
+      row.onclick = (e) => {
+        toggleItem(secKey, id);
+      };
+
+      const isSelected = Selections[secKey].has(id);
+
+      row.innerHTML = `
+      <div class="select-btn ${isSelected ? 'on' : ''}" id="btn-${id}"></div>
+      <div class="row-data">
+        <div class="data-main" id="title-${id}">${title}</div>
+        <div class="data-sub">${sub}</div>
+        <div class="data-meta">${meta}</div>
+      </div>
+    `;
+      return row;
+    }
+
+    function toggleItem(secKey, id) {
+      const set = Selections[secKey];
+      const btn = document.getElementById(`btn-${id}`);
+
+      if (set.has(id)) {
+        set.delete(id);
+        btn.classList.remove('on');
       } else {
-        // Mocking rows for other sections
-        for (let i = 1; i <= 5; i++) {
-          const itemId = `${secId}-${i}`;
-          rows += `
-            <div class="compiler-row" onclick="toggleItem('${secId}', '${itemId}')">
-              <div class="sel-btn" id="btn-${itemId}"></div>
-              <div class="row-content">
-                <div class="row-title">${secId.toUpperCase()} Log Point ${i} - ${date}</div>
-                <div class="row-sub">Automatic telemetry sync from Gaborone HQ...</div>
-              </div>
-              <div class="row-badge">${Math.floor(Math.random() * 20 + 2)}</div>
-            </div>
-          `;
-        }
-      }
-      return rows;
-    }
-
-    function toggleSection(id) {
-      const body = document.getElementById(`body-${id}`);
-      const isOpen = body.classList.contains('open');
-      document.querySelectorAll('.compiler-body').forEach(b => b.classList.remove('open'));
-      if (!isOpen) body.classList.add('open');
-    }
-
-    function toggleItem(secId, itemId) {
-      if (!State.selectedItems[secId]) State.selectedItems[secId] = new Set();
-      const set = State.selectedItems[secId];
-
-      if (set.has(itemId)) {
-        set.delete(itemId);
-        document.getElementById(`btn-${itemId}`).classList.remove('active');
-      } else {
-        set.add(itemId);
-        document.getElementById(`btn-${itemId}`).classList.add('active');
+        set.add(id);
+        btn.classList.add('on');
       }
 
-      updateCounters(secId);
+      updateGlobalCounters();
     }
 
-    function updateCounters(secId) {
-      const count = State.selectedItems[secId]?.size || 0;
-      document.getElementById(`sel-count-${secId}`).textContent = `${count} Selected`;
-
+    function updateGlobalCounters() {
       let total = 0;
-      Object.values(State.selectedItems).forEach(s => total += s.size);
-      document.getElementById('fullReportCount').textContent = `${total} Items Selected`;
+      for (const key in Selections) {
+        const count = Selections[key].size;
+        document.getElementById(`count-${key}`).textContent = `${count} Selected`;
+        total += count;
+      }
+      document.getElementById('full-total-count').textContent = `${total} Items Selected`;
     }
 
-    function resetSection(secId) {
-      State.selectedItems[secId]?.clear();
-      renderCompiler();
-      updateCounters(secId);
+    function resetCard(key) {
+      Selections[key].clear();
+      renderAllLists();
+      updateGlobalCounters();
     }
 
-    function previewMini(secId) {
-      const items = State.selectedItems[secId];
-      if (!items || items.size === 0) { alert('Select items first'); return; }
+    // --- MINI REPORT LOGIC ---
+    function previewMini(key) {
+      if (Selections[key].size === 0) { alert('Select items first'); return; }
 
-      State.currentSection = secId;
-      const list = Array.from(items);
-      let html = `<ul style="list-style:none">`;
-      list.forEach((id, idx) => {
-        html += `<li style="padding:12px; border-bottom:1px solid #eee"><b>Point ${idx + 1}:</b> ${id} data entry summary for Gaborone HQ.</li>`;
+      const modal = document.getElementById('miniModal');
+      const content = document.getElementById('miniContent');
+      const selectedIds = Array.from(Selections[key]);
+
+      // Fetch data for these IDs (simplified for demo)
+      let html = `<h3>${key.toUpperCase()} Line Items</h3><ul style="padding-left:20px; margin-top:12px">`;
+      selectedIds.forEach(id => {
+        const titleEl = document.getElementById(`title-${id}`);
+        html += `<li style="margin-bottom:8px; font-size:14px"><b>${titleEl ? titleEl.textContent : id}</b></li>`;
       });
       html += `</ul>`;
 
-      document.getElementById('miniContent').innerHTML = html;
-      document.getElementById('miniId').textContent = `REP-${secId.toUpperCase()}-${Math.floor(Math.random() * 9000) + 1000}`;
-      document.getElementById('miniReportView').style.display = 'flex';
+      content.innerHTML = html;
+      document.getElementById('miniTitle').value = `${key.charAt(0).toUpperCase() + key.slice(1)} Summary`;
+      document.getElementById('miniMeta').textContent = `${new Date().toLocaleDateString()} | ID: REP-${key.toUpperCase()}-${Math.floor(Math.random() * 900)}`;
+
+      modal.classList.add('open');
+      modal.dataset.currentSection = key;
     }
 
-    function addToFullReport() {
-      const secId = State.currentSection;
-      const title = document.getElementById('miniTitle').value;
-      const desc = document.getElementById('miniDesc').value;
-      const items = Array.from(State.selectedItems[secId]);
+    function compileToFull() {
+      const key = document.getElementById('miniModal').dataset.currentSection;
+      const report = {
+        title: document.getElementById('miniTitle').value,
+        desc: document.getElementById('miniDesc').value,
+        items: Array.from(Selections[key]),
+        section: key,
+        date: new Date().toLocaleString()
+      };
 
-      State.miniReports.push({ title, desc, items, section: secId, date: new Date().toLocaleString() });
-      alert(`Added ${title} to Full-Report Compiler`);
-      closeModal('miniReportView');
-      resetSection(secId);
+      CompiledMiniReports.push(report);
+      alert('Mini-Report added to Full-Report Compiler.');
+      closeModal('miniModal');
+      resetCard(key);
+    }
+
+    // --- FULL REPORT LOGIC ---
+    function saveFull() {
+      if (CompiledMiniReports.length === 0) { alert('Compile at least one Mini-Report first'); return; }
+      previewFull();
     }
 
     function previewFull() {
-      if (State.miniReports.length === 0) { alert('No mini-reports compiled yet'); return; }
+      const modal = document.getElementById('fullModal');
+      const content = document.getElementById('fullContent');
 
-      let html = `<div style="font-size:12px; color:var(--grey-text); margin-bottom:16px">${State.miniReports.length} Mini-reports included in this compilation.</div>`;
-      State.miniReports.forEach((rep, idx) => {
+      let html = '';
+      CompiledMiniReports.forEach((rep, idx) => {
         html += `
-        <div style="padding:16px; background:#f8f9fa; border-radius:8px; margin-bottom:12px; border-left:4px solid var(--blue); position:relative">
-           <div style="font-weight:800">${rep.title}</div>
-           <div style="font-size:11px; color:var(--grey-text)">${rep.section.toUpperCase()} · ${rep.items.length} Points</div>
-           <div style="font-size:12px; margin-top:6px">${rep.desc}</div>
-           <button onclick="removeMini(${idx})" style="position:absolute; top:12px; right:12px; background:none; border:none; color:#ef4444; font-size:10px; font-weight:800; cursor:pointer">REMOVE</button>
+        <div style="background:#f8f9fa; border-radius:12px; padding:16px; margin-bottom:12px; border-left:4px solid var(--blue); position:relative">
+           <div style="font-weight:800; font-size:15px">${rep.title}</div>
+           <div style="font-size:11px; color:var(--grey-text); margin:4px 0">${rep.date} · ${rep.items.length} Points</div>
+           <div style="font-size:13px">${rep.desc}</div>
+           <button onclick="removeMini(${idx})" style="position:absolute; top:12px; right:12px; background:none; border:none; color:red; font-size:10px; font-weight:800">REMOVE</button>
         </div>
       `;
       });
 
-      document.getElementById('fullContent').innerHTML = html;
-      document.getElementById('fullReportView').style.display = 'flex';
+      content.innerHTML = html;
+      modal.classList.add('open');
     }
 
     function removeMini(idx) {
-      if (confirm('Remove this mini-report from compilation?')) {
-        State.miniReports.splice(idx, 1);
-        if (State.miniReports.length === 0) {
-          closeModal('fullReportView');
-        } else {
-          previewFull();
-        }
+      if (confirm('Delete this Mini-Report?')) {
+        CompiledMiniReports.splice(idx, 1);
+        if (CompiledMiniReports.length === 0) closeModal('fullModal');
+        else previewFull();
       }
     }
 
-    function saveReportFinal() {
-      alert('Full Report Saved to Local Database.');
-      closeModal('fullReportView');
-    }
-
-    function shareReport() {
+    function shareFull() {
       const title = document.getElementById('fullTitle').value;
-      let body = `*FMIS FULL REPORT: ${title}*\n\n`;
-      State.miniReports.forEach(r => {
-        body += `[${r.title}]\n - ${r.items.length} items logged\n - ${r.desc}\n\n`;
+      let text = `*FMIS FULL REPORT: ${title}*\n\n`;
+      CompiledMiniReports.forEach(r => {
+        text += `[${r.title}]\n - Points: ${r.items.join(', ')}\n - ${r.desc}\n\n`;
       });
-      window.open(`https://wa.me/?text=${encodeURIComponent(body)}`);
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
     }
 
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function confirmFullSave() {
+      const title = document.getElementById('fullTitle').value;
+      DataManager.saveReport({
+        title,
+        reports: CompiledMiniReports,
+        date: new Date().toISOString()
+      });
+      alert('Full Report Saved to Profile -> Reports.');
+      closeModal('fullModal');
+      // Clear everything
+      CompiledMiniReports.length = 0;
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function handleScroll() {
+      const st = window.pageYOffset || document.documentElement.scrollTop;
+      const nav = document.getElementById('fullNav');
+      if (st > lastScroll && st > 100) { nav.classList.add('nav-hidden'); }
+      else { nav.classList.remove('nav-hidden'); }
+      lastScroll = st <= 0 ? 0 : st;
+    }
+
+    function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
 
     window.onload = init;
   </script>
