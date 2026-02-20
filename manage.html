@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>FMIS — Manage & Report Compiler</title>
+  <script src="DataManager.js"></script>
+  <style>
+    :root {
+      --blue: #0866ff;
+      --white: #ffffff;
+      --grey-bg: #f4f4f4;
+      --grey-mid: #e2e5e9;
+      --grey-border: #ededed;
+      --grey-text: #707070;
+      --black: #000000;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--grey-bg);
+      color: var(--black);
+      padding-bottom: 150px;
+    }
+
+    /* LEVEL 1: HEADER/NAVIGATION */
+    header {
+      background: var(--blue);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--white);
+    }
+
+    .header-top h1 {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 3px;
+      width: 100%;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: var(--white);
+      color: var(--blue);
+    }
+
+    /* REPORT COMPILER CARDS */
+    .compiler-section {
+      background: var(--white);
+      margin: 12px 16px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .compiler-trigger {
+      width: 100%;
+      padding: 18px;
+      background: var(--white);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--black);
+      cursor: pointer;
+    }
+
+    .compiler-trigger .meta {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+    }
+
+    .compiler-body {
+      display: none;
+      padding: 0 0 12px;
+      border-top: 1px solid var(--grey-bg);
+    }
+
+    .compiler-body.open {
+      display: block;
+    }
+
+    .compiler-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--grey-bg);
+      cursor: pointer;
+    }
+
+    .compiler-row:active {
+      background: #f8faff;
+    }
+
+    .sel-btn {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--grey-mid);
+      border-radius: 6px;
+      margin-right: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .sel-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .sel-btn.active::after {
+      content: '✓';
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .row-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .row-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .row-sub {
+      font-size: 12px;
+      color: var(--grey-text);
+    }
+
+    .row-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--blue);
+      background: #eff6ff;
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+
+    .compiler-actions {
+      display: flex;
+      background: var(--blue);
+      padding: 12px;
+    }
+
+    .action-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .action-btn:not(:last-child) {
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* BOTTOM NAVIGATION (FULL REPORT) */
+    .report-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--black);
+      padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2000;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .hamburger {
+      font-size: 24px;
+      color: var(--white);
+    }
+
+    .report-status {
+      color: var(--white);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .report-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .rep-btn {
+      background: #333;
+      padding: 10px 16px;
+      border-radius: 8px;
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 800;
+      border: none;
+    }
+
+    .rep-btn.prime {
+      background: var(--blue);
+    }
+
+    /* MINI REPORT MODAL */
+    #miniReportView,
+    #fullReportView {
+      position: fixed;
+      inset: 0;
+      background: var(--white);
+      z-index: 3000;
+      display: none;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      background: #ededed;
+      padding: 20px;
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .modal-footer {
+      background: var(--black);
+      padding: 16px;
+      display: flex;
+      justify-content: space-around;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-top">
+      <h1>Manage Fleet</h1>
+      <div id="userGreeting" style="font-size:12px; font-weight:600;"></div>
+    </div>
+    <div class="tab-bar">
+      <div class="tab" onclick="location.href='index.html'">Driver</div>
+      <div class="tab active">Manage</div>
+    </div>
+  </header>
+
+  <main id="compilerMain">
+    <!-- CARDS WILL BE GENERATED IN SCRIPT -->
+  </main>
+
+  <div class="report-bar" id="reportBar">
+    <div class="hamburger">☰</div>
+    <div class="report-status" id="fullReportCount">0 Items Selected</div>
+    <div class="report-btns">
+      <button class="rep-btn" onclick="previewFull()">Preview</button>
+      <button class="rep-btn prime" onclick="saveFull()">Save</button>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div id="miniReportView">
+    <div class="modal-header">
+      <div style="font-size:12px; color:var(--grey-text); font-weight:700" id="miniDate">20 Feb 2026 - 10:20 AM</div>
+      <div style="font-size:10px; color:var(--blue); font-weight:800; margin:4px 0" id="miniId">REP-FUEL-GABS-001</div>
+      <input type="text" id="miniTitle" value="Mini-Report Title"
+        style="width:100%; border:none; background:transparent; font-size:18px; font-weight:800; outline:none">
+      <input type="text" id="miniDesc" value="Tap to edit report description..."
+        style="width:100%; border:none; background:transparent; font-size:13px; color:var(--grey-text); outline:none; margin-top:4px">
+    </div>
+    <div class="modal-body" id="miniContent"></div>
+    <div class="modal-footer">
+      <button class="rep-btn" onclick="closeModal('miniReportView')">Close</button>
+      <button class="rep-btn prime" onclick="addToFullReport()">Compile to Full</button>
+    </div>
+  </div>
+
+  <div id="fullReportView">
+    <div class="modal-header">
+      <input type="text" id="fullTitle" value="Monthly Fleet Summary - Feb 2026"
+        style="width:100%; border:none; background:transparent; font-size:18px; font-weight:800; outline:none">
+    </div>
+    <div class="modal-body" id="fullContent"></div>
+    <div class="modal-footer">
+      <button class="rep-btn" onclick="closeModal('fullReportView')">Back</button>
+      <button class="rep-btn" onclick="shareReport()">Share WhatsApp</button>
+      <button class="rep-btn prime" onclick="saveReportFinal()">Save Final</button>
+    </div>
+  </div>
+
+  <script>
+    const State = {
+      selectedItems: {}, // sectionId -> Set of itemIds
+      miniReports: [],   // Array of { title, desc, items, date, section }
+      fullReport: [],    // Array of miniReport indices
+      currentSection: null
+    };
+
+    const SECTIONS = [
+      { id: 'vehicles', label: 'Vehicle - Status', sub: 'Active/Inactive' },
+      { id: 'fuel', label: 'Fuel Allocation', sub: 'Litre Usage' },
+      { id: 'stations', label: 'Stations', sub: 'Deployment' },
+      { id: 'tyres', label: 'Tyres', sub: 'Wear & Inventory' },
+      { id: 'drivers', label: 'Drivers', sub: 'Status & Roles' },
+      { id: 'attention', label: 'Attentions', sub: 'Urgent Tasks' },
+      { id: 'fleet', label: 'Fleet View', sub: 'Number Plates' }
+    ];
+
+    function init() {
+      const userJson = sessionStorage.getItem('fmis_user');
+      if (!userJson) { location.href = 'login.html'; return; }
+      const user = JSON.parse(userJson);
+      document.getElementById('userGreeting').textContent = `${user.first} ${user.last}`;
+
+      renderCompiler();
+    }
+
+    function renderCompiler() {
+      const main = document.getElementById('compilerMain');
+      main.innerHTML = '';
+
+      SECTIONS.forEach(sec => {
+        const container = document.createElement('div');
+        container.className = 'compiler-section';
+        container.innerHTML = `
+        <button class="compiler-trigger" onclick="toggleSection('${sec.id}')">
+          <div>
+            <div style="font-size:15px">${sec.label}</div>
+            <div style="font-size:11px; color:var(--grey-text); font-weight:600">${sec.sub}</div>
+          </div>
+          <div class="meta" id="count-${sec.id}">Feb 2026</div>
+        </button>
+        <div class="compiler-body" id="body-${sec.id}">
+          ${generateRows(sec.id)}
+          <div class="compiler-actions">
+            <div class="action-btn" id="sel-count-${sec.id}">0 Selected</div>
+            <div class="action-btn" onclick="previewMini('${sec.id}')">Preview</div>
+            <div class="action-btn" onclick="resetSection('${sec.id}')">Reset</div>
+          </div>
+        </div>
+      `;
+        main.appendChild(container);
+      });
+    }
+
+    function generateRows(secId) {
+      let rows = '';
+      const date = new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: '2026' });
+
+      if (secId === 'vehicles' || secId === 'fleet') {
+        const vehicles = DataManager.getVehicles();
+        vehicles.forEach(v => {
+          const itemId = `${secId}-${v.id}`;
+          rows += `
+          <div class="compiler-row" onclick="toggleItem('${secId}', '${itemId}')">
+            <div class="sel-btn" id="btn-${itemId}"></div>
+            <div class="row-content">
+              <div class="row-title">${v.reg} — ${v.type}</div>
+              <div class="row-sub">${v.station} · ${v.color}</div>
+            </div>
+            <div class="row-badge">${(v.mileage / 1000).toFixed(1)}k</div>
+          </div>
+        `;
+        });
+      } else if (secId === 'drivers') {
+        const users = DataManager.getUsers().filter(u => u.type === 'driver');
+        users.forEach(u => {
+          const itemId = `${secId}-${u.id}`;
+          rows += `
+          <div class="compiler-row" onclick="toggleItem('${secId}', '${itemId}')">
+            <div class="sel-btn" id="btn-${itemId}"></div>
+            <div class="row-content">
+              <div class="row-title">${u.first} ${u.last}</div>
+              <div class="row-sub">${u.role} · ${u.area}</div>
+            </div>
+            <div class="row-badge">${u.hasVehicle ? 'Active' : 'New'}</div>
+          </div>
+        `;
+        });
+      } else {
+        // Mocking rows for other sections
+        for (let i = 1; i <= 5; i++) {
+          const itemId = `${secId}-${i}`;
+          rows += `
+            <div class="compiler-row" onclick="toggleItem('${secId}', '${itemId}')">
+              <div class="sel-btn" id="btn-${itemId}"></div>
+              <div class="row-content">
+                <div class="row-title">${secId.toUpperCase()} Log Point ${i} - ${date}</div>
+                <div class="row-sub">Automatic telemetry sync from Gaborone HQ...</div>
+              </div>
+              <div class="row-badge">${Math.floor(Math.random() * 20 + 2)}</div>
+            </div>
+          `;
+        }
+      }
+      return rows;
+    }
+
+    function toggleSection(id) {
+      const body = document.getElementById(`body-${id}`);
+      const isOpen = body.classList.contains('open');
+      document.querySelectorAll('.compiler-body').forEach(b => b.classList.remove('open'));
+      if (!isOpen) body.classList.add('open');
+    }
+
+    function toggleItem(secId, itemId) {
+      if (!State.selectedItems[secId]) State.selectedItems[secId] = new Set();
+      const set = State.selectedItems[secId];
+
+      if (set.has(itemId)) {
+        set.delete(itemId);
+        document.getElementById(`btn-${itemId}`).classList.remove('active');
+      } else {
+        set.add(itemId);
+        document.getElementById(`btn-${itemId}`).classList.add('active');
+      }
+
+      updateCounters(secId);
+    }
+
+    function updateCounters(secId) {
+      const count = State.selectedItems[secId]?.size || 0;
+      document.getElementById(`sel-count-${secId}`).textContent = `${count} Selected`;
+
+      let total = 0;
+      Object.values(State.selectedItems).forEach(s => total += s.size);
+      document.getElementById('fullReportCount').textContent = `${total} Items Selected`;
+    }
+
+    function resetSection(secId) {
+      State.selectedItems[secId]?.clear();
+      renderCompiler();
+      updateCounters(secId);
+    }
+
+    function previewMini(secId) {
+      const items = State.selectedItems[secId];
+      if (!items || items.size === 0) { alert('Select items first'); return; }
+
+      State.currentSection = secId;
+      const list = Array.from(items);
+      let html = `<ul style="list-style:none">`;
+      list.forEach((id, idx) => {
+        html += `<li style="padding:12px; border-bottom:1px solid #eee"><b>Point ${idx + 1}:</b> ${id} data entry summary for Gaborone HQ.</li>`;
+      });
+      html += `</ul>`;
+
+      document.getElementById('miniContent').innerHTML = html;
+      document.getElementById('miniId').textContent = `REP-${secId.toUpperCase()}-${Math.floor(Math.random() * 9000) + 1000}`;
+      document.getElementById('miniReportView').style.display = 'flex';
+    }
+
+    function addToFullReport() {
+      const secId = State.currentSection;
+      const title = document.getElementById('miniTitle').value;
+      const desc = document.getElementById('miniDesc').value;
+      const items = Array.from(State.selectedItems[secId]);
+
+      State.miniReports.push({ title, desc, items, section: secId, date: new Date().toLocaleString() });
+      alert(`Added ${title} to Full-Report Compiler`);
+      closeModal('miniReportView');
+      resetSection(secId);
+    }
+
+    function previewFull() {
+      if (State.miniReports.length === 0) { alert('No mini-reports compiled yet'); return; }
+
+      let html = `<div style="font-size:12px; color:var(--grey-text); margin-bottom:16px">${State.miniReports.length} Mini-reports included in this compilation.</div>`;
+      State.miniReports.forEach((rep, idx) => {
+        html += `
+        <div style="padding:16px; background:#f8f9fa; border-radius:8px; margin-bottom:12px; border-left:4px solid var(--blue); position:relative">
+           <div style="font-weight:800">${rep.title}</div>
+           <div style="font-size:11px; color:var(--grey-text)">${rep.section.toUpperCase()} · ${rep.items.length} Points</div>
+           <div style="font-size:12px; margin-top:6px">${rep.desc}</div>
+           <button onclick="removeMini(${idx})" style="position:absolute; top:12px; right:12px; background:none; border:none; color:#ef4444; font-size:10px; font-weight:800; cursor:pointer">REMOVE</button>
+        </div>
+      `;
+      });
+
+      document.getElementById('fullContent').innerHTML = html;
+      document.getElementById('fullReportView').style.display = 'flex';
+    }
+
+    function removeMini(idx) {
+      if (confirm('Remove this mini-report from compilation?')) {
+        State.miniReports.splice(idx, 1);
+        if (State.miniReports.length === 0) {
+          closeModal('fullReportView');
+        } else {
+          previewFull();
+        }
+      }
+    }
+
+    function saveReportFinal() {
+      alert('Full Report Saved to Local Database.');
+      closeModal('fullReportView');
+    }
+
+    function shareReport() {
+      const title = document.getElementById('fullTitle').value;
+      let body = `*FMIS FULL REPORT: ${title}*\n\n`;
+      State.miniReports.forEach(r => {
+        body += `[${r.title}]\n - ${r.items.length} items logged\n - ${r.desc}\n\n`;
+      });
+      window.open(`https://wa.me/?text=${encodeURIComponent(body)}`);
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    window.onload = init;
+  </script>
+</body>
+
+</html>

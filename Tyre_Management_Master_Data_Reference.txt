@@ -1,0 +1,1057 @@
+I’ve created a single downloadable canvas document titled:
+“Tyre Management App – Master Data Reference Tables (Botswana)”
+What you now have (clean + realistic)
+✅ 10 separate Master Data tables
+✅ 50 total dummy rows (5 per table)
+✅ Botswana-specific (Gaborone, districts, ministries, vendors)
+✅ Designed for Google Sheets / Excel (1 sheet per table)
+✅ Perfect for dropdowns, calculators, and offline mode
+This directly solves the problem you explained:
+No more “Gabs / Gaborone / Gabs City” nonsense breaking reports.
+How to use this immediately (practical steps)
+Download the document
+Open Excel or Google Sheets
+Create one workbook
+Create 10 sheets, named exactly as the tables
+Copy-paste each table into its own sheet
+Lock these sheets → use them as reference sources only
+Your Tyre Entry table should now store:
+Ministry ID
+Station ID
+Vehicle Type ID
+Tyre Spec ID
+Vendor ID—not text.
+That’s how you get:
+Faster app performance
+Accurate BWP cost-per-km
+Audit-proof reporting
+Zero typo chaos
+Why this is the right architecture (real talk)
+This is the same Master Data → Transaction Data separation used in:
+SAP Fleet
+Oracle Transport
+Government ERP systems
+But you’ve adapted it to offline + WhatsApp + Botswana reality, which most big systems completely fail at.
+Next high-impact moves (choose one)
+🔗 Foreign-key ID version (numeric IDs for every row)
+📊 Sample “Tyre Transaction” sheet that references these masters
+🚨 Fraud & anomaly rules (e.g. theft spikes per station)
+📱 Offline-first sync logic (how phones reconcile later)
+This is no longer a “tyre app” — it’s a fleet intelligence system.Say the next piece and we keep building ekse 🛞📊
+Tyre Management App – Master Data Reference Tables (Botswana)
+This document contains 10 Master Data (Reference) Tables with 50 total dummy rows (≈5 rows per table). These are designed to be:
+Copypasted into Google Sheets / Excel (one sheet per table)
+Used as dropdown reference sources
+Offlinesafe, typoproof, and auditready for Botswana Government fleets
+1) Ministry & Department Master (5 rows)
+Ministry Name
+Abbreviation
+Department Code
+Ministry of Transport & Infrastructure
+MoTI
+MOTI-TRNS
+Ministry of Health
+MoH
+MOH-AMB
+Ministry of Defence & Security
+MDS
+MDS-LOG
+Ministry of Local Government
+MLG
+MLG-FLEET
+Ministry of Environment & Tourism
+MET
+MET-CON
+2) Botswana Station & Location Master (5 rows)
+District
+Town/Village
+Station Name
+GPS Coordinates
+South-East
+Gaborone
+Central Transport Depot
+-24.6282,25.9231
+South-East
+Gaborone
+Broadhurst Police Station
+-24.6553,25.9086
+Kweneng
+Molepolole
+Molepolole Works Yard
+-24.4066,25.4951
+Central
+Serowe
+Serowe District Hospital
+-22.3921,26.7101
+Chobe
+Kasane
+Kasane Council Depot
+-17.8070,25.1500
+3) Tire Specifications Library (5 rows)
+Brand
+Size
+Pattern Type
+Speed/Load Rating
+Michelin
+265/70R16
+All-Terrain
+112S
+Bridgestone
+225/55R17
+Highway
+97V
+BFGoodrich
+285/70R17
+Mud-Terrain
+121Q
+Dunlop
+195/65R15
+All-Season
+91H
+Goodyear
+245/75R16
+Light Truck
+120R
+4) Vehicle Master & Axle Configuration (5 rows)
+Vehicle Type
+Axle Count
+Tire Position Map
+Sedan
+2
+FL, FR, RL, RR
+Bakkie (Hilux)
+2
+FL, FR, RL, RR
+Ambulance (Dually)
+2
+FL, FR, RLI, RLO, RRI, RRO
+7Ton Truck
+3
+FL, FR, A2LI, A2LO, A2RI, A2RO, A3LI, A3LO, A3RI, A3RO
+Minibus
+2
+FL, FR, RL, RR
+5) Rank & User Role Registry (5 rows)
+Rank Title
+Permission Level
+Driver
+Viewer
+Mechanic
+Editor
+Transport Officer
+Approver
+Inspector
+Editor
+Fleet Administrator
+Admin
+6) Service & Action Codes (5 rows)
+Action Code
+Description
+FIT
+New Fitting
+ROT
+Rotation
+ALIGN
+Wheel Alignment
+PUNC
+Puncture Repair
+PRESS
+Pressure Check
+7) Condition & Status Indicators (5 rows)
+Status
+Condition
+In Stock
+Excellent
+Fitted
+Good
+Spare
+Fair (Monitor)
+Sent for Retreading
+Fair (Monitor)
+Scrapped
+Critical (Replace)
+8) Scrapping & Disposal Reasons (5 rows)
+Code
+Reason
+NW
+Normal Wear
+SD
+Sidewall Damage (Pothole)
+BO
+Blowout
+AG
+Aged (DOT Code)
+UP
+Unrepairable Puncture
+9) Approved Supplier (Vendor) Registry (5 rows)
+Vendor Name
+Tax ID
+Location
+Contract Expiry Date
+Tiger Wheel & Tyre Gaborone
+BW-TWT-001
+Gaborone
+2026-03-31
+Supa Quick Gaborone
+BW-SQ-014
+Gaborone
+2025-11-30
+Hi-Q Fleet Services
+BW-HQ-009
+Gaborone West
+2026-06-30
+Auto Tyre & Fitment
+BW-ATF-021
+Broadhurst
+2025-09-30
+Commercial Tyre Centre
+BW-CTC-017
+Gaborone Industrial
+2026-01-31
+10) Position & Placement Map (5 rows)
+Code
+Description
+FL
+Front Left
+FR
+Front Right
+RL
+Rear Left
+RR
+Rear Right
+RLI
+Rear Left Inner
+Why This Is AppReady
+No freetext entry → no reporting errors
+IDs can replace labels in your database
+Works offline
+Enables costperkm, fraud detection, and axle analytics
+Recommended: One Excel file → 10 sheets → each table locked for dropdown use.
+Approved Supplier (Vendor) Registry
+Module Purpose:This module defines who the system is allowed to buy tyres from. It enforces procurement discipline by restricting purchases to PPRA-registered, government-approved suppliers, while also modeling real-world communication, where WhatsApp is the primary channel and vendors have multiple human contacts with different roles.
+This is a governance + trust layer, not just a contact list.
+1) VENDOR MASTER (Company-Level Truth)
+Purpose: Establishes the legal entity that is approved to supply tyres.
+Core Vendor Fields
+Vendor ID (System-generated)
+Vendor Name (Registered Legal Name)
+Trading Name (If different)
+PPRA Registration Number
+Tax Identification Number (TIN)
+VAT Registered (Yes / No)
+Physical Location
+City / Town
+Industrial Area / Mall / Plot
+Operating Region
+National
+Regional
+City-specific
+Contract Start Date
+Contract Expiry Date
+Contract Status (Auto-calculated)
+Active
+Expiring Soon (e.g. < 90 days)
+Expired (Hard Block)
+Compliance Flags (System-Controlled)
+PPRA Validated
+Tax Clearance Valid
+Approved for Government Procurement
+Approved for Emergency Procurement (Optional)
+2) SUPPLIER CAPABILITIES (What They’re Allowed to Sell)
+Purpose: Prevents vendors from supplying items outside their approved scope.
+Capability Fields
+Product Categories Approved
+Passenger Tyres
+SUV / 4×4 Tyres
+Commercial / LT Tyres
+Off-Road / M/T Tyres
+Approved Brands (Multi-select)
+Services Offered
+Supply Only
+Fitment
+Balancing & Alignment
+Fleet Inspections
+Delivery Capability
+On-site Delivery
+Emergency Roadside
+Depot Pickup Only
+3) VENDOR CONTACT PROFILES (Human-Level Registry)
+Purpose: Models the actual people you talk to on WhatsApp, calls, and email — not just the company.
+Contact Profile (Linked to Vendor ID)
+Each vendor can have multiple contacts, each with a full profile.
+Identity Fields
+Contact ID (System-generated)
+Full Name
+Role / Title
+Sales Rep
+Account Manager
+Operations Manager
+Director / Owner
+Accounts / Finance
+Seniority Level
+Operational
+Managerial
+Executive
+Communication Fields
+WhatsApp Number (Primary)
+Secondary WhatsApp Number (Optional)
+Phone Call Number
+Email Address
+Preferred Contact Method
+WhatsApp
+Call
+Email
+Trust & Usage Metadata
+Is Primary Contact (Yes / No)
+Authorized to Quote Prices (Yes / No)
+Authorized to Sign / Approve Orders (Yes / No)
+Last Contacted Date
+Responsiveness Rating (Internal)
+4) WHATSAPP-FIRST DESIGN LOGIC
+Purpose: Aligns the app with real Southern African business behavior.
+WhatsApp Integration Logic (Conceptual)
+Each Vendor → Many Contacts
+Each Contact → One or more WhatsApp numbers
+Orders, quotes, and confirmations are:
+Logged as WhatsApp interactions
+Tagged to a specific contact profile
+Practical App Features
+One-tap WhatsApp launch from contact profile
+Conversation notes attached to contact
+Quote screenshots or PDFs attached per contact
+Visibility into who said what and when
+5) PROCUREMENT CONTROL RULES
+Hard Rules (System Enforced)
+Purchases only allowed from vendors with:
+Active contract
+Valid PPRA registration
+Valid Tax ID
+Expired contracts = vendor locked
+Quotes from non-authorized contacts are rejected
+Soft Rules (Warnings)
+Vendor has only one contact (risk)
+Primary contact unresponsive
+Contract nearing expiry
+6) WHY THIS MODULE MATTERS
+Prevents fraud and ghost suppliers
+Aligns with government audit requirements
+Reflects how procurement actually works on the ground
+Protects staff from "my guy at the tyre shop" behavior
+7) FUTURE EXTENSIONS (Designed-In)
+PPRA document upload & verification
+Vendor performance scoring
+Blacklist / suspension history
+Cross-fleet shared vendor intelligence
+Design Note:This registry should be referenced by Purchasing, Tyre Replacement, Emergency Procurement, and Audit modules. No tyre enters the system without passing through this gate.
+Vehicle Master & Axle Configuration
+Module Purpose:This module defines how many tyres the system should expect for a specific vehicle (linked to a BX plate or fleet ID). It acts as a hard validation layer so users cannot overlog or underlog tyres (e.g., logging 6 tyres on a 4wheel Toyota Hilux).
+This configuration becomes the truth table the rest of the tyre system obeys.
+1) VEHICLE MASTER (Primary Identity)
+Purpose: Establishes the vehicle archetype before any tyre data is captured.
+Core Fields
+Vehicle Identifier
+BX Plate / Fleet ID
+Vehicle Type (Dropdown)
+Sedan
+Hatchback
+SUV
+Bakkie / Pickup
+Ambulance
+Minibus
+Bus
+7Ton Truck
+10Ton Truck
+Articulated Truck / Horse
+Trailer (Single / Double)
+Drive Type (Optional but recommended)
+FWD
+RWD
+AWD
+4×4
+2) AXLE CONFIGURATION
+Purpose: Defines the physical axle layout and enforces tyre count rules.
+Axle Count
+2 Axles → Passenger cars, SUVs, bakkies
+3 Axles → Rigid trucks, ambulances with rear dually
+4+ Axles → Heavy trucks, articulated vehicles
+Axle Type (Per Axle)
+Each axle is defined independently:
+Steering Axle
+Drive Axle
+Tag / Lift Axle
+Trailer Axle
+3) TYRE POSITION MAP (Critical Validation Layer)
+Purpose: Explicitly defines every legal tyre position the vehicle may have.
+Standard Position Naming Convention
+Front Axle:
+FrontLeft (FL)
+FrontRight (FR)
+Rear / Drive Axle (Single Wheel):
+RearLeft (RL)
+RearRight (RR)
+Rear / Drive Axle (Dual Wheel / Dually):
+RearOuterLeft (ROL)
+RearInnerLeft (RIL)
+RearInnerRight (RIR)
+RearOuterRight (ROR)
+Additional Axles (If Applicable):
+Axle2Left / Axle2Right
+Axle2InnerLeft / Axle2OuterLeft
+Axle2InnerRight / Axle2OuterRight
+4) PREDEFINED VEHICLE TEMPLATES (Recommended)
+Example 1: Sedan (e.g., Toyota Corolla)
+Axle Count: 2
+Tyre Count: 4
+Positions:
+FL, FR, RL, RR
+Example 2: Toyota Hilux / Ford Ranger
+Vehicle Type: Bakkie
+Axle Count: 2
+Tyre Count: 4
+Positions:
+FL, FR, RL, RR
+(System rule: Reject 5th or 6th tyre entries)
+Example 3: Ambulance (Rear Dually)
+Axle Count: 2
+Tyre Count: 6
+Positions:
+FL, FR
+ROL, RIL, RIR, ROR
+Example 4: 7Ton Truck
+Axle Count: 3
+Tyre Count: 10
+Positions:
+FL, FR
+Axle2InnerLeft, Axle2OuterLeft
+Axle2InnerRight, Axle2OuterRight
+Axle3InnerLeft, Axle3OuterLeft
+Axle3InnerRight, Axle3OuterRight
+5) SYSTEM RULES & VALIDATION LOGIC
+Hard Rules
+Tyre entries must match the vehicle’s tyre position map
+Extra tyre entries are rejected
+Missing tyre positions are flagged
+Tyre rotation only allowed between compatible positions
+Soft Rules (Warnings)
+Different brands on same axle
+Different tread depth left vs right
+Mismatched load or speed rating per axle
+6) WHY THIS MODULE MATTERS
+Prevents human error
+Enforces mechanical realism
+Enables axlebased analytics
+Supports future features:
+Tyre rotation history
+Axle wear analysis
+Fleet compliance audits
+Design Note:This module should load before tyre capture, inspection, or replacement workflows. All downstream tyre data should reference this configuration as immutable truth.
+Tyre Management App – Core Category Reference (Sections 1–4)
+This document consolidates Categories 1, 2, 3, and 4 into a single structured reference you can export, print, or adapt directly into dropdown (+/–) logic for your Tyre Management App (Southern Africa context, Botswana-ready).
+1) BRAND (Primary Category)
+Purpose: Manufacturer identification, filtering, inventory grouping, and warranty reference.
+Brand List (Dropdown – Flat List):
+Apollo
+BFGoodrich
+Bridgestone
+Continental
+Cooper
+CST
+Dunlop
+Falken
+Firestone
+General
+Giti
+Goodyear
+Hankook
+Kelly
+Kumho
+Maxxis
+Michelin
+Nexen
+Pirelli
+Sailun
+Sumitomo
+Toyo
+Yokohama
+Westlake
+Optional SubFlags (Internal Logic):
+Premium / MidRange / Budget
+Global / Regional / Emerging Market
+OE (Original Equipment) Friendly
+2) CATEGORY / VEHICLE TYPE (Main → Sub → SubSub)
+Purpose: Determines usage intent, construction strength, and legal/safety compatibility.
+2.1 Passenger Vehicles
+Passenger Car Tyres
+All Season
+Summer
+Winter
+Performance / Ultra High Performance (UHP)
+RunFlat
+2.2 SUV / Crossover
+SUV / Crossover Tyres
+Highway Terrain (H/T)
+All Terrain (A/T)
+Rugged Terrain (R/T)
+Mud Terrain (M/T)
+Road / OffRoad Bias (Informational Field):
+H/T → 90% Road / 10% OffRoad
+A/T → 50% Road / 50% OffRoad
+R/T → 40% Road / 60% OffRoad
+M/T → 20% Road / 80% OffRoad
+2.3 4×4 / OffRoad
+Dedicated 4×4 Tyres
+Highway Terrain (H/T)
+All Terrain (A/T)
+Mud Terrain (M/T)
+Extreme OffRoad / Rock / Desert
+2.4 Commercial / Light Truck
+Light Truck (LT / LVR / CRated)
+Delivery / Urban Fleet
+Construction / Hauling
+Towing / Overland
+2.5 Special Purpose
+EVSpecific Tyres
+Trailer / Caravan Tyres
+Spare / Temporary Tyres
+Industrial / Agricultural (optional future expansion)
+3) SIZE & FITMENT (Hierarchical Technical Category)
+Purpose: Physical compatibility with rim, vehicle clearance, load capacity, and safety.
+3.1 Tyre Size Format
+Standard Example: 265/70R17
+265 → Width (mm)
+70 → Aspect Ratio (%)
+R → Radial Construction
+17 → Rim Diameter (inches)
+3.2 Size Breakdown (Dropdown Logic)
+Width
+175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 305
+Aspect Ratio
+35, 40, 45, 50, 55, 60, 65, 70, 75, 80
+Construction
+R (Radial)
+Rim Diameter
+13" – 22"
+3.3 Reinforcement & Markings
+XL → Extra Load
+LT / C → Commercial / Light Truck
+RF → RunFlat
+Tubeless / TubeType
+4) LOAD INDEX & SPEED RATING (SafetyCritical Category)
+Purpose: Determines maximum weight capacity and safe top speed of the tyre.
+4.1 Load Index (Numeric)
+Indicates maximum load per tyre (kg)
+Examples:
+91 → 615 kg
+100 → 800 kg
+110 → 1,060 kg
+120 → 1,400 kg
+130 → 1,900 kg
+(Higher number = higher load capacity)
+4.2 Speed Rating (Alphabetical)
+Indicates maximum safe speed under rated load
+Common Ratings:
+Q → 160 km/h
+R → 170 km/h
+S → 180 km/h
+T → 190 km/h
+H → 210 km/h
+V → 240 km/h
+W → 270 km/h
+Y → 300 km/h
+4.3 Combined Example
+265/70R17 121/118Q
+Size: 265/70R17
+Load Index: 121 (single) / 118 (dual)
+Speed Rating: Q (160 km/h)
+4.4 Optional Quality Metrics (Advanced Toggle)
+UTQG Treadwear
+UTQG Traction
+UTQG Temperature
+Noise Rating (EU Label)
+Wet Grip Class
+Implementation Notes (App Logic)
+Enforce Category → Size → Load/Speed validation to prevent unsafe combinations
+Lock Passenger tyres from Commercial load ratings unless explicitly overridden
+Use Road/OffRoad bias as UX guidance, not a hard restriction
+This document is designed to be exported as:
+Google Docs
+PDF
+Excel reference sheet
+Inapp static reference / tooltip system
+Finding an accurate and up-to-date list of Botswana’s public offices is essential for your TapFo database, especially given the significant government restructuring that took place following the 2024 general elections.
+Below is a comprehensive and categorized list based on the current 2026 landscape. Since you are an app developer, I have organized this so you can easily adapt the data for your Google Sheets or Android Room Database.
+Trustworthy Resources Used (15)
+Official Government Portal (gov.bw)
+DailyNews Botswana (State Media)
+Bank of Botswana (BoB) Annual Reports
+Statistics Botswana (SB) Institutional Directory
+Public Procurement Regulatory Authority (PPRA)
+Human Resource Development Council (HRDC)
+Botswana Unified Revenue Service (BURS)
+Non-Bank Financial Institutions Regulatory Authority (NBFIRA)
+Attorney General’s Chambers (AGC) Legal Database
+Botswana Power Corporation (BPC) Corporate Directory
+Water Utilities Corporation (WUC) Reports
+Commonwealth iLibrary (Botswana Acronyms)
+Botswana Investment and Trade Centre (BITC)
+United Nations Botswana Agency List
+Directorate of Public Service Management (DPSM)
+1. Executive & Constitutional Offices
+These are the foundational offices that oversee the nation's governance.
+Office of the President (OP)
+Office of the Vice President (OVP)
+Administration of Justice (AoJ)
+Attorney General’s Chambers (AGC)
+Office of the Auditor General (OAG)
+Office of the Ombudsman (Ombudsman)
+Independent Electoral Commission (IEC)
+National Assembly (Parliament)
+National Planning Commission (NPC)
+2. Government Ministries (Post-2024 Restructure)
+The following reflect the current ministerial portfolios under the Boko administration.
+Ministry for State President (MSP)
+Ministry of Finance (MoF)
+Ministry of Health (MoH)
+Ministry of Child Welfare and Basic Education (MCWBE)
+Ministry of Higher Education (MoHE)
+Ministry of Agriculture (MoA)
+Ministry of Minerals and Energy (MME)
+Ministry of Communications and Innovation (MCI)
+Ministry of Entrepreneurship (MoE)
+Ministry of Environment and Tourism (MET)
+Ministry of International Relations (MIR)
+Ministry of Justice and Correctional Services (MJCS)
+Ministry of Labour and Home Affairs (MLHA)
+Ministry of Local Government and Traditional Affairs (MLGTA)
+Ministry of Sport and Arts (MSA)
+Ministry of Trade and Entrepreneurship (MTE)
+Ministry of Transport and Infrastructure (MTI)
+Ministry of Water and Human Settlement (MWHS)
+Ministry of Youth and Gender Affairs (MYGA)
+3. Parastatals & Statutory Bodies
+These are autonomous or semi-autonomous entities created by Acts of Parliament.
+Financial & Economic
+Bank of Botswana (BoB)
+Botswana Development Corporation (BDC)
+Botswana Savings Bank (BSB)
+Botswana Stock Exchange (BSE)
+Botswana Unified Revenue Service (BURS)
+Citizen Entrepreneurial Development Agency (CEDA)
+National Development Bank (NDB)
+Non-Bank Financial Institutions Regulatory Authority (NBFIRA)
+Utilities & Infrastructure
+Botswana Fibre Networks (BoFiNet)
+Botswana Housing Corporation (BHC)
+Botswana Power Corporation (BPC)
+Botswana Railways (BR)
+Botswana Telecommunications Corporation (BTC)
+Water Utilities Corporation (WUC)
+Regulation & Standards
+Botswana Bureau of Standards (BOBS)
+Botswana Communications Regulatory Authority (BOCRA)
+Botswana Energy Regulatory Authority (BERA)
+Botswana Engineering Registration Board (ERB)
+Botswana Medicines Regulatory Authority (BoMRA)
+Competition and Consumer Authority (CCA)
+Public Procurement Regulatory Authority (PPRA)
+Education, Research & Social
+Botswana Accountancy College (BAC)
+Botswana Examinations Council (BEC)
+Botswana Institute for Development Policy Analysis (BIDPA)
+Botswana International University of Science and Technology (BIUST)
+Botswana Open University (BOU)
+Botswana Qualifications Authority (BQA)
+Human Resource Development Council (HRDC)
+Motor Vehicle Accident Fund (MVA Fund)
+University of Botswana (UB)
+Trade, Tourism & Industry
+Botswana Agricultural Marketing Board (BAMB)
+Botswana Investment and Trade Centre (BITC)
+Botswana Meat Commission (BMC)
+Botswana Oil Limited (BOL)
+Botswana Tourism Organisation (BTO)
+Local Enterprise Authority (LEA)
+4. Security & Oversight Agencies
+Botswana Defence Force (BDF)
+Botswana Police Service (BPS)
+Botswana Prison Service (BPrS)
+Directorate of Intelligence and Security (DIS)
+Directorate of Public Service Management (DPSM)
+Directorate on Corruption and Economic Crime (DCEC)
+Financial Intelligence Agency (FIA)
+Developer Bonus: CSV Format for TapFo DataBase
+Since you need to update your TapFo DataBase (Google Sheets), you can copy-paste the block below into a CSV converter or directly into a cell and use "Split text to columns."
+Code snippet
+Category,Organization Name,Abbreviation
+Constitutional,Office of the President,OP
+Constitutional,Administration of Justice,AoJ
+Constitutional,Independent Electoral Commission,IEC
+Ministry,Ministry of Finance,MoF
+Ministry,Ministry of Health,MoH
+Ministry,Ministry of Communications and Innovation,MCI
+Ministry,Ministry of Child Welfare and Basic Education,MCWBE
+Parastatal,Botswana Unified Revenue Service,BURS
+Parastatal,Water Utilities Corporation,WUC
+Parastatal,Botswana Power Corporation,BPC
+Parastatal,Citizen Entrepreneurial Development Agency,CEDA
+Parastatal,Botswana Housing Corporation,BHC
+Security,Botswana Police Service,BPS
+Security,Botswana Defence Force,BDF
+Would you like me to generate a JSON array of this entire list to use directly in your Android app's strings.xml or a local database initialization file?
+Mobile Banks In Botswana's
+In Botswana, when people refer to "all 3" in the context of mobile banking or mobile money, they are specifically talking about the services provided by the three major Mobile Network Operators (MNOs).
+While there are many traditional banking apps (like FNBB, Absa, and Stanbic), these three mobile money platforms are the primary way TapFo users—especially those in rural areas or without traditional bank accounts—will handle payments like the VIP Pass (P20).
+The "Big 3" Mobile Money Services in Botswana
+#
+Service Full Name
+Provider (Parent Company)
+Common Abbreviation
+Primary USSD Code
+1
+Orange Money
+Orange Botswana
+OM
+*145#
+2
+MyZaka
+Mascom Wireless
+MyZaka
+*167#
+3
+Smega
+BTC (Botswana Telecommunications Corp)
+Smega
+*173#
+Detailed Breakdown for Your Database
+1. Orange Money (OM)
+Provider: Orange Botswana
+Category: Electronic Money Institution (EMI)
+Key Features for TapFo: Includes "Bank-to-Wallet" (transferring from banks like FNBB to OM) and "Visa Virtual Card" for online payments.
+Significance: Usually the largest mobile money market share in Botswana.
+2. MyZaka (Mascom Money)
+Provider: Mascom Wireless
+Category: Electronic Money Institution (EMI)
+Key Features for TapFo: Strongest presence in remote villages where Mascom has the best signal coverage.
+Significance: Widely used for "Ithuse" instant loans and electricity (BPC) purchases.
+3. Smega (BTC Smega)
+Provider: Botswana Telecommunications Corporation (BTC)
+Category: Electronic Money Institution (EMI)
+Key Features for TapFo: Integrated with BTC's fixed-line and internet services. Offers a physical Smega Visa Debit card.
+Significance: Often used by government employees or those in areas where BTC (formerly beMobile) is the primary network.
+complete list of banks currently operating in Botswana, categorized by their license type. These are the abbreviations commonly used in the local market, on the Botswana Stock Exchange (BSE), and within the financial sector.
+1. Central Bank
+Bank Name
+Abbreviation
+Bank of Botswana
+BoB
+2. Commercial Banks
+These are the primary retail banks where most individuals and businesses (like your TapFo clients) hold their accounts.
+Full Bank Name
+Common Abbreviation / Ticker
+Absa Bank Botswana Limited
+ABSA
+Access Bank Botswana Limited (Formerly BancABC)
+ACCESS
+Bank Gaborone Limited
+BG or BGL
+Bank of Baroda (Botswana) Limited
+Baroda
+BBS Bank Limited (Formerly Botswana Building Society)
+BBS
+First Capital Bank Limited
+FCB
+First National Bank of Botswana Limited
+FNBB
+Stanbic Bank Botswana Limited
+Stanbic
+Standard Chartered Bank Botswana Limited
+Stanchart
+3. Statutory & Development Banks
+These are state-owned or specialized institutions focusing on savings and national development.
+Full Bank Name
+Abbreviation
+Botswana Savings Bank
+BSB
+National Development Bank
+NDB
+Citizen Entrepreneurial Development Agency
+CEDA
+Botswana Development Corporation
+BDC
+Towns/Cities Regios of Botswana
+Botswana recently underwent a significant administrative restructuring (2023–2025) where former sub-districts were elevated to full administrative districts to decentralize services. As an app developer, it is critical that your Towns/Cities & Areas tab reflects these 29 primary administrative authorities.
+Below is an extensive, numbered list grouped by urban status and geographic parent regions.
+I. Urban Districts (Cities & Towns)
+These are primary urban hubs with their own city or town councils.
+Gaborone (GBS) – Capital City
+Francistown (FRW) – City
+Lobatse (LOB) – Town
+Selebi-Phikwe (SPW) – Town
+Jwaneng (JWN) – Town
+Sowa Town (SOW) – Town
+Orapa (ORA) – Mining Township (Restricted access)
+II. Rural & Regional Districts (Grouped by Parent Region)
+This section reflects the newly elevated district status for former sub-districts.
+1. Central Region (The Largest)
+1.1 Serowe District (SER) – Regional Headquarters. Notable areas: Paje, Mabeleapodi.
+1.2 Palapye District (PAL) – Major rail/road hub. Notable areas: Morupule, Lechen, Moremi.
+1.3 Mahalapye District (MAH) – Notable areas: Shoshong, Kalamare, Mmutlane.
+1.4 Bobirwa District (BOB) – Headquarters: Bobonong. Notable areas: Molalatau, Mathathane.
+1.5 Tutume District (TUT) – Notable areas: Maitengwe, Nata, Gweta.
+1.6 Tonota District (TON) – Notable areas: Shashe Mooke, Mandunyane.
+1.7 Boteti District (BOT) – Headquarters: Letlhakane. Notable areas: Rakops, Mmatshumo.
+2. Southern Region
+2.1 Kanye District (KAN) – (Ngwaketse) Headquarters: Kanye. Notable areas: Ranaka, Lotlhakane.
+2.2 Goodhope District (GHP) – (Barolong) Notable areas: Pitsane, Digawana, Hebron.
+2.3 Moshupa District (MSH) – Notable areas: Manyana, Thamaga-border.
+2.4 Mabutsane District (MAB) – Notable areas: Khakhea, Kokong.
+3. Kweneng Region
+3.1 Molepolole District (MOL) – (Kweneng East) Notable areas: Lentsweletau, Kopong.
+3.2 Mogoditshane-Thamaga District (MGT) – High-growth peri-urban area near Gaborone.
+3.3 Letlhakeng District (LET) – (Kweneng West) Notable areas: Takatokwane, Dutlwe.
+4. North West & Chobe Regions
+4.1 Maun District (MAU) – Tourism capital. Notable areas: Shorobe, Toteng.
+4.2 Okavango District (OKV) – Headquarters: Gumare. Notable areas: Shakawe, Seronga.
+4.3 Chobe District (CHO) – Headquarters: Kasane. Notable areas: Kazungula, Pandamatenga.
+5. Kgalagadi & Ghanzi Regions (Deep West)
+5.1 Tsabong District (TSA) – (Kgalagadi South) Notable areas: Middlepits, Bokspits.
+5.2 Hukuntsi District (HUK) – (Kgalagadi North) Notable areas: Kang, Lehututu.
+5.3 Ghanzi District (GHA) – Notable areas: Dekar, Kalkfontein.
+5.4 Charleshill District (CHA) – Notable areas: Ncojane, Makunda.
+6. Eastern & South-Eastern Regions
+6.1 Kgatleng District (KGT) – Headquarters: Mochudi. Notable areas: Artesia, Oodi, Bokaa.
+6.2 Ramotswa District (RAM) – (South East) Notable areas: Otse, Mogobane.
+6.3 Tlokweng District (TLO) – Peri-urban district near Gaborone.
+6.4 North East District (NET) – Headquarters: Masunga. Notable areas: Tati Siding, Zwenshambe.
+The fuel retail sector in Botswana is highly regulated by the Botswana Energy Regulatory Authority (BERA) and supplied primarily through Botswana Oil Limited (BOL). As of 2026, the market features a blend of global giants and strong local players like Petro Hyper and Kwanokeng.
+1. Major Fuel Retailers & Providers
+Retailer Name
+Primary Fuel Kinds
+Convenience Store / Food
+Key Services
+Puma Energy
+ULP 95, Diesel 50ppm, LPG
+Sefalana Quick, 7-Eleven
+24/7 Shops, Card Payments, Aviation Fuel
+Engen Botswana
+ULP 95, ULP 93*, Diesel 50ppm
+QuickShop, Woolworths Foodstop
+Wimpy/Steers, ATM Access, Loyalty App
+Shell (Vivo Energy)
+ULP 95, V-Power, Diesel 50ppm
+Select, FreshStop
+Car Wash, Shell Card, Rimula/Helix Oils
+TotalEnergies
+ULP 95, Excellium Diesel
+Bonjour
+Lubricant Bay, Quartz Oils, Solar-powered sites
+Petro Hyper
+ULP 95, Diesel 50ppm, Paraffin
+Petro Hyper Shop
+Fleet Management, Bulk Supply, Mining Lubes
+Kwanokeng Oil
+ULP 95, Diesel 50ppm, LPG
+Border Post Kiosks
+Truck Stops, Border Logistics, Bulk Storage
+TswanaFuel
+ULP 95, Diesel 50ppm
+Engen-branded shops
+Roadside Assistance, Cargo Handling, Wi-Fi
+*Note: ULP 93 was slated for phase-out in early 2025; most stations now standardize on ULP 95 and premium grades like ULP 98.
+2. Fuels, Oils & Specialized Products
+Petrol (ULP 95 & 98): Standard Unleaded Petrol. High-octane ULP 98 is increasingly available at premium sites (Shell V-Power/Puma Max).
+Diesel (50ppm & 10ppm): While 50ppm is the national standard, BERA and Botswana Oil have transitioned towards 10ppm (Ultra-Low Sulfur Diesel) to support modern Euro-5 engines.
+Illuminating Paraffin: Vital for rural heating and cooking; sold in bulk or at dedicated pumps (common at Petro Hyper).
+Lubricants & Oils: * Shell: Helix (engines), Rimula (heavy-duty), Spirax (gears).
+TotalEnergies: Quartz (passenger cars), Rubia (trucks).
+Puma: Puma Lubricants (multi-grade).
+Engen: Petronas-branded or Engen Genuine oils.
+This document provides the complete, exhaustive master data for the 25 Dropdown Categories required to transform the TapFo/FMIS app into a comprehensive Botswana Vehicle Fleet and Asset Management System.
+The data is structured to be audit-proof and low-data friendly, ensuring that every entry corresponds to an ID rather than free-form text. You can copy-paste these lists directly into your Google Sheets (TapFo Database) or upload them as source material for NotebookLM.
+I. Asset Governance & Financial Accountability
+1. Funding Source / Vote Code
+01-Consolidated Fund: Main government revenue account.
+02-Development Fund: For capital projects and infrastructure.
+03-Special Fund: Road Fund: Dedicated levy for road maintenance.
+04-Special Fund: Tourism Development: Specific to MET assets.
+05-Donor: World Bank: Project-specific international funding.
+06-Donor: Global Fund: Healthcare-specific fleet funding.
+07-Donor: USAID: Development and health aid.
+08-Emergency Contingency: Disaster relief and urgent repairs.
+09-Project: NIDP: National Infrastructure Development Program.
+10-Project: ERTP: Economic Recovery and Transformation Plan.
+11-Departmental Recurrent: Standard operational budget per ministry.
+2. Asset Ownership Status
+Government Owned (Permanent): Standard BX plate assets.
+CTO Leased (Medium-Term): Central Transport Organisation provided.
+Private Hire (Short-Term): Commercial rental for peak periods.
+Inter-Departmental Loan: Temporary transfer between ministries.
+Donor-Lien Asset: Owned by donor until project handover.
+Lease-to-Own: Commercial finance agreement.
+Impounded / Forfeited: Assets seized by legal authority.
+3. Boarding / Disposal Authority (Government Form)
+GEN 21 (Boarding Request): Standard disposal initiation.
+Police Accident Report (P3/P3A): Required for write-offs due to crashes.
+CTO Technical Write-off: Professional engineer's condemnation.
+Theft Affidavit (Police Stamped): Verification of lost asset.
+GEN 12 (Transfer Order): Legal change of ownership within government.
+Manufacturer Recall (Safety): Compulsory return to vendor.
+Obsolescence Certificate: Assets technically irrelevant (old tech).
+4. Procurement Method Verification
+Framework Contract: Pre-approved long-term vendor.
+Formal Tender: Large-scale competitive bid.
+Informal Quotation (3-Quote Rule): Low-value standard purchase.
+Petty Cash (Low Value): Urgent, small-value spend.
+Emergency Waiver: Single-source procurement during disasters.
+Direct Government Purchase: Bought directly from manufacturer.
+5. Asset Utilization Flag
+Active Duty: Operational and on task.
+Under Repair (Internal): At Ministry workshop.
+Under Repair (External): At Approved Vendor.
+Surplus (Ready for Transfer): Functional but unassigned.
+Suspended / Impounded: Grounded due to disciplinary or legal issues.
+Boarded (Pending Disposal): No longer in service, awaiting auction.
+Ghost Archive: System entry for historical audits only.
+II. Operational Fleet Tracking (Low-Data Strategy)
+6. Custodian Assignment Mode
+Individual Driver: Single point of accountability.
+Night Shift Team: Shared team responsibility.
+Pool Vehicle (General): Available to any authorized staff.
+VIP Dedicated: Specific to high-ranking official.
+Maintenance Standby: Reserved for mechanics/technicians.
+Emergency Response Unit: Permanent standby for rapid deployment.
+7. Mission / Task Priority
+P1 - Emergency/Ambulance: Life-critical, priority fuel.
+P2 - VIP/Security: High-security or diplomatic transport.
+P3 - Essential Fieldwork: Ministry programs and remote visits.
+P4 - Routine/Office: Standard administration and logistics.
+P5 - Logistics / Cargo: Movement of non-perishable goods.
+8. Passive Location Anchor (Botswana Context)
+Gaborone: Central CTO Depot.
+Gaborone: Broadhurst Police Yard.
+Molepolole: District Works Yard.
+Serowe: District Hospital Hub.
+Kasane: Chobe Council Depot.
+Francistown: North-East Regional Depot.
+Maun: Ngamiland Works Yard.
+Ghanzi: Township Service Point.
+Palapye: A1 Central Junction.
+Lobatse: Southern Regional Office.
+Ramokgwebana: Border Post Kiosk.
+Mamuno: Border Logistics Yard.
+9. Shift / Duty Context
+Day Shift (07:30 - 16:30): Standard government hours.
+On-Call / Standby: After-hours availability.
+Night Shift Patrol: Security or emergency overnight.
+Long-Haul Trip: Multi-day cross-country journey.
+Weekend Patrol: Saturday/Sunday special duty.
+Event Support: Specific one-off operations.
+10. Assigned Operating Region (Botswana Districts)
+South-East District.
+Kweneng District.
+Central District.
+Chobe District.
+Southern District.
+Kgatleng District.
+North-West District (Ngamiland).
+North-East District.
+Ghanzi District.
+Kgalagadi District.
+III. Vehicle Health & Consumables (Asset Upkeep)
+11. Fuel Grade & Additive Requirement
+50ppm Diesel: National standard commercial diesel.
+10ppm Diesel (U-LSD): Premium ultra-low sulfur for Euro-5 engines.
+ULP 95 Petrol: Standard unleaded petrol.
+ULP 98 Petrol: High-performance unleaded.
+Aviation Fuel (Jet A1): For Ministry flight assets.
+LPG: For specialized utility vehicles.
+Paraffin (Illuminating): For remote station equipment.
+12. Odometer Verification Method
+Physical Check (Driver): Human reading entry.
+Dashboard Photo (Timestamped): Verified via app camera.
+Fuel Receipt Log: Reading from official filling station receipt.
+GPS Cross-Check: System calculated distance validation.
+Mechanic Inspection: Verified during service/repair.
+Telemetry Sync: Data pulled from on-board device.
+13. Battery Health Age Bracket
+< 1 Year (New): Low risk, high voltage.
+1 - 2 Years (Mid-Life): Standard performance.
+2 - 3 Years (Monitor): Potential for cold-start failure.
+> 3 Years (Replace Soon): Beyond expected service life.
+Critical / Failed: Requires immediate jump or replacement.
+14. Secondary Fluid Status (Checklist)
+All Levels Optimal: Green state.
+Low Engine Oil (Topped up): Minor maintenance logged.
+Coolant Leak Suspected: Amber warning; requires workshop.
+Brake Fluid Critical: Red alert; vehicle grounded.
+Transmission Fluid Low: Workshop visit required.
+Windscreen Washer Empty: Routine user task.
+15. Telemetry / Tracker Health
+Signal Active: Device communicating normally.
+No Heartbeat (Silent): Device offline > 24 hours.
+Tamper Alert: Physical interference detected.
+Low Battery (Device): Internal tracker battery failing.
+GPS Mismatch: Device data conflicts with human logs.
+IV. Safety, Compliance & Risk
+16. Road Surface / Terrain Profile
+Tar (A1 Highway): High-speed, low-wear.
+Urban Potholed: High suspension/tyre impact risk.
+Gravel (Graded): Standard rural transit.
+Heavy Sand (Kgalagadi): High engine strain/low speed.
+Corrosive (Saline/Salt): Risk to chassis and components (Makgadikgadi/Sowa).
+Off-Road / Bush: Extreme terrain, high damage risk.
+17. Damage Liability Source
+Fair Wear & Tear: Normal operation degradation.
+Pothole Damage: Infrastructure-related failure.
+Driver Negligence: Misuse or failure to follow policy.
+3rd Party Liability: Accident caused by external vehicle.
+Act of Nature: Flooding, lightning, or wildlife collision.
+Vandalism / Civil Unrest: Intentional damage by others.
+18. Vehicle Permit / Disc Status
+Valid: Fully compliant for road use.
+Expiring < 30 Days: Renewal required soon.
+Expired (Grounded): Illegal to operate.
+Temporary Permit: Valid for limited time/task.
+Exempt (Government Order): Special status assets.
+19. Equipment & Toolkit Inventory
+Complete (Full Kit): Jack, spare, triangle, extinguisher.
+Missing Spare Tyre: Critical risk.
+Fire Extinguisher Expired: Safety violation.
+Jack / Lever Broken: Maintenance required.
+Medical Kit Depleted: First aid restock needed.
+Tow Cable Missing: Emergency recovery risk.
+20. Driver Fatigue / Fitness Check
+Fit for Duty: Rested and alert.
+Sleep Deprived: High risk; shift rotation suggested.
+Feeling Unwell: Requires medical assessment.
+Post-Accident Assessment: Mandatory check after any incident.
+On Medication: Potential drowsiness warning.
+V. Digital Workflow & Localization
+21. Verification Evidence Provided
+WhatsApp Photo Sent: Visual proof to supervisor.
+Signed Paper Log: Physical copy digitized.
+Witnessed by Mechanic: Internal verification.
+Digital Timestamp (Auto): System-generated proof.
+Biometric Confirm (Driver): Fingerprint or facial check.
+22. Anomaly Explanation (Fraud Signals)
+Idling in Traffic: Justifies low fuel efficiency.
+Off-Road Low-Range Use: Explains mileage/fuel deviations.
+Fuel Leak Detected: Legitimate loss of fuel.
+Data Entry Error: Accidental mistype.
+Emergency Speeding: Justifies mechanical strain.
+Siphoning Suspected (Admin Flag): Investigation required.
+23. Reporting Language Preference
+English (Standard): Primary administrative language.
+Setswana (Standard): Primary national language.
+Regional Dialect (Optional): For specific local field teams.
+24. Maintenance Urgency Level
+Routine Service: Planned upkeep.
+Minor Repair (Keep Running): Safe to operate until next service.
+Safety Critical (Ground Vehicle): Immediate repairs required.
+Scheduled Overhaul: Large-scale planned maintenance.
+25. Offline Sync Status (User-Facing)
+Saved Locally (Offline): Data stored on device.
+Syncing...: Active data transfer.
+Confirmed on Server: Receipt acknowledged by HQ.
+Sync Conflict: Divergent data; requires manual review.
+Data Redacted: Privacy or security block applied.

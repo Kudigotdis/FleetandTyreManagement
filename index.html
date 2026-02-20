@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>FMIS — Fleet Management</title>
+  <script src="DataManager.js"></script>
+  <style>
+    :root {
+      --blue: #0866ff;
+      --white: #ffffff;
+      --grey-bg: #f4f4f4;
+      --grey-mid: #e2e5e9;
+      --grey-border: #ededed;
+      --grey-text: #707070;
+      --black: #000000;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+      /* Progress Thresholds */
+      --color-good: #22c55e;
+      --color-caution: #f59e0b;
+      --color-replace: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--grey-bg);
+      color: var(--black);
+      padding-bottom: 90px;
+      overflow-x: hidden;
+    }
+
+    /* LEVEL 1: HEADER/NAVIGATION */
+    header {
+      background: var(--blue);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--white);
+    }
+
+    .header-top h1 {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 3px;
+      width: 100%;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: var(--white);
+      color: var(--blue);
+    }
+
+    /* LEVEL 2: VEHICLE MAIN CARD */
+    .card {
+      background: var(--white);
+      margin: 12px 16px;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .vehicle-main {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .vehicle-photo {
+      width: 72px;
+      height: 72px;
+      background: #f8f9fa;
+      border: 1px solid var(--grey-mid);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .vehicle-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .v-reg {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .v-color {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--black);
+      margin: 2px 0;
+    }
+
+    .v-station {
+      font-size: 12px;
+      color: var(--grey-text);
+    }
+
+    /* LEVEL 3: ADD FUEL INTERACTIVE CARD */
+    .fuel-card {
+      background: var(--white);
+    }
+
+    .fuel-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--grey-bg);
+    }
+
+    .fuel-row:last-child {
+      border-bottom: none;
+    }
+
+    .fuel-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    .fuel-input {
+      text-align: right;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue);
+      width: 100px;
+    }
+
+    .fuel-select {
+      border: none;
+      outline: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+      background: transparent;
+      cursor: pointer;
+      text-align-last: right;
+    }
+
+    .fuel-cost {
+      color: var(--grey-text);
+      font-weight: 600;
+    }
+
+    /* LEVEL 4: TYRENOMICS */
+    .accordion-trigger {
+      width: 100%;
+      background: var(--white);
+      padding: 18px;
+      margin: 12px 16px;
+      width: calc(100% - 32px);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--black);
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .tyrenomics-panel {
+      display: none;
+      /* Toggle via Bothoflow */
+      margin: 0 16px 12px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .tyrenomics-panel.open {
+      display: grid;
+    }
+
+    /* TYRE CARD GRID */
+    .tyre-card {
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
+      transition: all 0.3s;
+      border: 1px solid var(--grey-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* State 1: View */
+    .tyre-view {
+      background: #f4f4f4;
+      color: var(--black);
+    }
+
+    .tyre-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
+
+    .mileage-bar {
+      width: 100%;
+      height: 6px;
+      background: #ddd;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .mileage-fill {
+      height: 100%;
+      transition: width 0.5s, background 0.3s;
+    }
+
+    .km-counter {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .tyre-field {
+      background: rgba(255, 255, 255, 0.6);
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .tyre-field span {
+      color: var(--grey-text);
+    }
+
+    .tyre-footer {
+      font-size: 9px;
+      color: var(--grey-text);
+      margin-top: auto;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* State 2: Options */
+    .tyre-options {
+      background: #848484;
+      color: var(--white);
+      border-color: #777;
+    }
+
+    .opt-btn {
+      width: 100%;
+      padding: 10px;
+      background: #666;
+      border: none;
+      border-radius: 8px;
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+
+    .opt-btn:active {
+      background: #555;
+      transform: scale(0.98);
+    }
+
+    /* State 3: Update */
+    .tyre-update {
+      background: #f9f9f9;
+      color: var(--black);
+    }
+
+    .update-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--grey-mid);
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 6px;
+      font-family: var(--font);
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    /* LEVEL 5: VEHICLE SUMMARY */
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .sum-label {
+      font-size: 13px;
+      color: var(--grey-text);
+      font-weight: 600;
+    }
+
+    .sum-val {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .update-link {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--blue);
+      text-transform: uppercase;
+    }
+
+    .service-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--grey-mid);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .service-fill {
+      height: 100%;
+      background: var(--color-good);
+    }
+
+    /* LEVEL 6: NAVIGATION BAR */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--black);
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding-bottom: env(safe-area-inset-bottom);
+      transition: transform 0.3s;
+      z-index: 2000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--white);
+      opacity: 0.6;
+      font-size: 10px;
+      font-weight: 600;
+      gap: 4px;
+    }
+
+    .nav-item.active {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      font-size: 20px;
+    }
+
+    .nav-hidden {
+      transform: translateY(100%);
+    }
+
+    /* NEW USER CARD */
+    .new-user-card {
+      background: #fff;
+      padding: 24px;
+      margin: 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .new-user-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .new-user-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .new-user-text {
+      font-size: 14px;
+      color: var(--grey-text);
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    .request-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-weight: 800;
+    }
+  </style>
+</head>
+
+<body onscroll="handleScroll()">
+
+  <!-- LEVEL 1 -->
+  <header id="mainHeader">
+    <div class="header-top">
+      <h1>FMIS Fleet</h1>
+      <div id="userGreeting" style="font-size: 12px; font-weight: 600;"></div>
+    </div>
+    <div class="tab-bar" id="manageTabs" style="display:none">
+      <div class="tab active">Driver</div>
+      <div class="tab" onclick="location.href='manage.html'">Manage</div>
+    </div>
+  </header>
+
+  <main id="appContent">
+    <!-- NEW USER STATE -->
+    <div id="newUserSection" style="display:none">
+      <div class="new-user-card">
+        <div class="new-user-icon">🚗</div>
+        <div class="new-user-title">Awaiting Vehicle</div>
+        <div class="new-user-text">Your profile is active, but no vehicle is assigned yet. Tap below to request
+          assignment via WhatsApp.</div>
+        <button class="request-btn" onclick="requestAssignment()">Request Assignment</button>
+      </div>
+    </div>
+
+    <!-- DRIVER STATE -->
+    <div id="driverSection">
+
+      <!-- LEVEL 2 -->
+      <div class="card vehicle-main">
+        <div class="vehicle-photo" id="vPhoto">🚔</div>
+        <div class="vehicle-info">
+          <div class="v-reg" id="displayReg">---</div>
+          <div class="v-color" id="displayColor">---</div>
+          <div class="v-station" id="displayStation">---</div>
+        </div>
+      </div>
+
+      <!-- LEVEL 3 -->
+      <div class="card fuel-card">
+        <div class="fuel-row">
+          <span class="fuel-label">Add Fuel Amount</span>
+          <div style="display:flex; align-items:center;">
+            <input type="number" class="fuel-input" id="fuelLitres" placeholder="0.00" oninput="calcFuel()">
+            <span style="font-weight: 700; margin-left: 4px; font-size: 14px;">L</span>
+          </div>
+        </div>
+        <div class="fuel-row">
+          <span class="fuel-label">Fuel Type</span>
+          <select class="fuel-select" id="fuelType" onchange="calcFuel()">
+            <option>ULP 95</option>
+            <option>ULP 93</option>
+            <option>Ultra 98</option>
+            <option selected>Diesel 50PPM</option>
+            <option>Diesel 10PPM</option>
+          </select>
+        </div>
+        <div class="fuel-row">
+          <span class="fuel-label">Full Cost</span>
+          <span class="fuel-cost" id="fuelTotal">P0.00</span>
+        </div>
+        <div class="fuel-row">
+          <span class="fuel-label">Fuel Station</span>
+          <select class="fuel-select">
+            <option>Puma Central</option>
+            <option>Shell Broadhurst</option>
+            <option>Engen Tlokweng</option>
+            <option>Vivo G-West</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- LEVEL 4 -->
+      <button class="accordion-trigger" onclick="toggleTyrenomics()">
+        TYRENOMICS — Tyre Tracking
+        <span id="tyreArrow">▼</span>
+      </button>
+      <div class="tyrenomics-panel" id="tyrePanel">
+        <!-- Cards Injected -->
+      </div>
+
+      <!-- LEVEL 5 -->
+      <div class="card">
+        <div class="summary-row">
+          <span class="sum-label">Mileage #km</span>
+          <div>
+            <span class="sum-val" id="dispKm">0 km</span>
+            <a href="#" class="update-link" style="margin-left: 12px;"
+              onclick="alert('Open Odometer Update Modal')">Update</a>
+          </div>
+        </div>
+        <div class="summary-row">
+          <span class="sum-label">Last Service Date</span>
+          <span class="sum-val" id="lastServiceDisp">Wed 15 Jan 2026</span>
+        </div>
+        <div class="summary-row">
+          <span class="sum-label">Next Service in # Months</span>
+          <span class="sum-val" id="nextServiceDisp">6 Months</span>
+        </div>
+        <div class="service-bar">
+          <div class="service-fill" id="serviceProgress" style="width: 70%"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <nav class="nav-bar" id="mainNav">
+    <div class="nav-item">
+      <span class="nav-icon">🚨</span>
+      <span>Emergency</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">📩</span>
+      <span>Request</span>
+    </div>
+    <div class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      <span>History</span>
+    </div>
+    <div class="nav-item" onclick="logout()">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </div>
+  </nav>
+
+  <script>
+    let lastScroll = 0;
+    let currentUser = null;
+    let currentVehicle = null;
+
+    function init() {
+      const userJson = sessionStorage.getItem('fmis_user');
+      if (!userJson) { window.location.href = 'login.html'; return; }
+      currentUser = JSON.parse(userJson);
+
+      document.getElementById('userGreeting').textContent = `${currentUser.first} ${currentUser.last} · ${currentUser.role}`;
+
+      if (currentUser.type === 'manager' || currentUser.type === 'admin') {
+        document.getElementById('manageTabs').style.display = 'flex';
+      }
+
+      if (!currentUser.hasVehicle) {
+        document.getElementById('driverSection').style.display = 'none';
+        document.getElementById('newUserSection').style.display = 'block';
+      } else {
+        loadVehicleData();
+      }
+    }
+
+    function loadVehicleData() {
+      const vehicles = DataManager.getVehicles();
+      currentVehicle = vehicles.find(v => v.id === currentUser.vehicleId) || vehicles[0];
+
+      document.getElementById('displayReg').textContent = currentVehicle.reg;
+      document.getElementById('displayColor').textContent = currentVehicle.color;
+      document.getElementById('displayStation').textContent = `Stationed at: ${currentVehicle.station}`;
+      document.getElementById('dispKm').textContent = `${currentVehicle.mileage.toLocaleString()} km`;
+
+      renderTyres();
+    }
+
+    function renderTyres() {
+      const container = document.getElementById('tyrePanel');
+      const tyres = DataManager.getTyres(currentVehicle.id);
+      container.innerHTML = '';
+
+      const labels = { 'LF': 'Left Front', 'RF': 'Right Front', 'RL': 'Left Back', 'RR': 'Right Back' };
+
+      ['LF', 'RF', 'RL', 'RR'].forEach(pos => {
+        const t = tyres.find(ty => ty.pos === pos) || { pos, brand: '---', serial: '---', tread: 0, pressure: 0, km: 0 };
+
+        const card = document.createElement('div');
+        card.id = `tyre-${pos}`;
+        card.className = 'tyre-card tyre-view';
+        card.onclick = () => toState2(pos);
+
+        const pct = Math.min((t.km / 40000) * 100, 100);
+        let barColor = 'var(--color-good)';
+        if (pct > 60) barColor = 'var(--color-caution)';
+        if (pct > 85) barColor = 'var(--color-replace)';
+
+        card.innerHTML = `
+        <div class="tyre-label">${labels[pos]}</div>
+        <div class="mileage-bar"><div class="mileage-fill" style="width:${pct}%; background:${barColor}"></div></div>
+        <div class="km-counter">${t.km.toLocaleString()}km</div>
+        <div class="tyre-field">Tyre Brand <span>${t.brand}</span></div>
+        <div class="tyre-field">Serial No <span>${t.serial}</span></div>
+        <div class="tyre-field">Tread (depth) <span>${t.tread}mm</span></div>
+        <div class="tyre-field">Pressure <span>${t.pressure}psi</span></div>
+        <div class="tyre-field">Station <span>GPW</span></div>
+        <div class="tyre-field">Date <span>Feb 20</span></div>
+        <div class="tyre-footer">by ${currentUser.first}</div>
+      `;
+        container.appendChild(card);
+      });
+    }
+
+    function toState2(pos) {
+      const card = document.getElementById(`tyre-${pos}`);
+      card.onclick = null;
+      card.className = 'tyre-card tyre-options';
+      const labels = { 'LF': 'Left Front', 'RF': 'Right Front', 'RL': 'Left Back', 'RR': 'Right Back' };
+
+      card.innerHTML = `
+      <div class="tyre-label" style="color:#fff">${labels[pos]}</div>
+      <button class="opt-btn" onclick="toState3('${pos}', 'Replace Tyre')">Replace Tyre</button>
+      <button class="opt-btn" onclick="toState3('${pos}', 'Tyre Rotation')">Tyre Rotation</button>
+      <button class="opt-btn" onclick="toState3('${pos}', 'Set Pressure')">Set Pressure</button>
+      <button class="opt-btn" onclick="toState3('${pos}', 'Puncture Repair')">Puncture Repair</button>
+      <button class="opt-btn" style="background:transparent; border:1px solid rgba(255,255,255,0.3)" onclick="event.stopPropagation(); renderTyres()">Cancel</button>
+    `;
+    }
+
+    function toState3(pos, action) {
+      const card = document.getElementById(`tyre-${pos}`);
+      card.className = 'tyre-card tyre-update';
+      const labels = { 'LF': 'Left Front', 'RF': 'Right Front', 'RL': 'Left Back', 'RR': 'Right Back' };
+
+      card.innerHTML = `
+      <div class="tyre-label" style="text-align:center">${labels[pos]} — ${action}</div>
+      <input type="text" class="update-input" id="u-brand-${pos}" placeholder="Tyre Brand">
+      <input type="text" class="update-input" id="u-serial-${pos}" placeholder="Serial No">
+      <div style="display:flex; gap:6px;">
+        <input type="number" class="update-input" id="u-tread-${pos}" placeholder="Tread depth">
+        <input type="number" class="update-input" id="u-press-${pos}" placeholder="Pressure">
+      </div>
+      <button class="save-btn" onclick="saveTyre('${pos}')">Save</button>
+    `;
+    }
+
+    function saveTyre(pos) {
+      const brand = document.getElementById(`u-brand-${pos}`).value;
+      const serial = document.getElementById(`u-serial-${pos}`).value;
+      const tread = document.getElementById(`u-tread-${pos}`).value;
+      const press = document.getElementById(`u-press-${pos}`).value;
+
+      DataManager.updateTyre({
+        vehicleId: currentVehicle.id,
+        pos: pos,
+        brand: brand || 'Generic',
+        serial: serial || 'S-123',
+        tread: parseFloat(tread) || 8.0,
+        pressure: parseInt(press) || 32,
+        km: 0
+      });
+      renderTyres();
+    }
+
+    function toggleTyrenomics() {
+      const p = document.getElementById('tyrePanel');
+      const a = document.getElementById('tyreArrow');
+      p.classList.toggle('open');
+      a.textContent = p.classList.contains('open') ? '▲' : '▼';
+    }
+
+    function calcFuel() {
+      const litres = parseFloat(document.getElementById('fuelLitres').value) || 0;
+      const type = document.getElementById('fuelType').value;
+      let price = 14.50;
+      if (type.includes('95')) price = 15.80;
+      if (type.includes('Diesel')) price = 16.20;
+      document.getElementById('fuelTotal').textContent = `P${(litres * price).toFixed(2)}`;
+    }
+
+    function handleScroll() {
+      const st = window.pageYOffset || document.documentElement.scrollTop;
+      const nav = document.getElementById('mainNav');
+      if (st > lastScroll && st > 100) { nav.classList.add('nav-hidden'); }
+      else { nav.classList.remove('nav-hidden'); }
+      lastScroll = st <= 0 ? 0 : st;
+    }
+
+    function requestAssignment() {
+      const msg = `Hello, I am ${currentUser.first} ${currentUser.last} from Gaborone Central Station. I need a vehicle assigned to my profile.`;
+      window.open(`https://wa.me/26771234567?text=${encodeURIComponent(msg)}`);
+    }
+
+    function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
+
+    window.onload = init;
+  </script>
+</body>
+
+</html>

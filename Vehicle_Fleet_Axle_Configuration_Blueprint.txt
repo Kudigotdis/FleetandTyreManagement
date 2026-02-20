@@ -1,0 +1,87 @@
+Vehicle Master & Axle Configuration
+Module Purpose: This module defines how many tyres the system should expect for a specific vehicle (linked to a BX plate or fleet ID). It acts as a hard validation layer so users cannot over‑log or under‑log tyres (e.g., logging 6 tyres on a 4‑wheel Toyota Hilux).
+This configuration becomes the truth table the rest of the tyre system obeys.
+1) VEHICLE MASTER (Primary Identity)
+Purpose: Establishes the vehicle archetype before any tyre data is captured.
+Core Fields
+• Vehicle Identifier
+◦ BX Plate / Fleet ID
+• Vehicle Type (Dropdown)
+◦ Sedan
+◦ Hatchback
+◦ SUV
+◦ Bakkie / Pickup
+◦ Ambulance
+◦ Minibus
+◦ Bus
+◦ 7‑Ton Truck
+◦ 10‑Ton Truck
+◦ Articulated Truck / Horse
+◦ Trailer (Single / Double)
+• Drive Type (Optional but recommended)
+◦ FWD
+◦ RWD
+◦ AWD
+◦ 4×4
+2) AXLE CONFIGURATION
+Purpose: Defines the physical axle layout and enforces tyre count rules.
+Axle Count
+• 2 Axles → Passenger cars, SUVs, bakkies
+• 3 Axles → Rigid trucks, ambulances with rear dually
+• 4+ Axles → Heavy trucks, articulated vehicles
+Axle Type (Per Axle)
+Each axle is defined independently: - Steering Axle - Drive Axle - Tag / Lift Axle - Trailer Axle
+3) TYRE POSITION MAP (Critical Validation Layer)
+Purpose: Explicitly defines every legal tyre position the vehicle may have.
+Standard Position Naming Convention
+Front Axle: - Front‑Left (FL) - Front‑Right (FR)
+Rear / Drive Axle (Single Wheel): - Rear‑Left (RL) - Rear‑Right (RR)
+Rear / Drive Axle (Dual Wheel / Dually): - Rear‑Outer‑Left (ROL) - Rear‑Inner‑Left (RIL) - Rear‑Inner‑Right (RIR) - Rear‑Outer‑Right (ROR)
+Additional Axles (If Applicable): - Axle2‑Left / Axle2‑Right - Axle2‑Inner‑Left / Axle2‑Outer‑Left - Axle2‑Inner‑Right / Axle2‑Outer‑Right
+4) PREDEFINED VEHICLE TEMPLATES (Recommended)
+Example 1: Sedan (e.g., Toyota Corolla)
+• Axle Count: 2
+• Tyre Count: 4
+• Positions:
+◦ FL, FR, RL, RR
+Example 2: Toyota Hilux / Ford Ranger
+• Vehicle Type: Bakkie
+• Axle Count: 2
+• Tyre Count: 4
+• Positions:
+◦ FL, FR, RL, RR
+(System rule: Reject 5th or 6th tyre entries)
+Example 3: Ambulance (Rear Dually)
+• Axle Count: 2
+• Tyre Count: 6
+• Positions:
+◦ FL, FR
+◦ ROL, RIL, RIR, ROR
+Example 4: 7‑Ton Truck
+• Axle Count: 3
+• Tyre Count: 10
+• Positions:
+◦ FL, FR
+◦ Axle2‑Inner‑Left, Axle2‑Outer‑Left
+◦ Axle2‑Inner‑Right, Axle2‑Outer‑Right
+◦ Axle3‑Inner‑Left, Axle3‑Outer‑Left
+◦ Axle3‑Inner‑Right, Axle3‑Outer‑Right
+5) SYSTEM RULES & VALIDATION LOGIC
+Hard Rules
+• Tyre entries must match the vehicle’s tyre position map
+• Extra tyre entries are rejected
+• Missing tyre positions are flagged
+• Tyre rotation only allowed between compatible positions
+Soft Rules (Warnings)
+• Different brands on same axle
+• Different tread depth left vs right
+• Mismatched load or speed rating per axle
+6) WHY THIS MODULE MATTERS
+• Prevents human error
+• Enforces mechanical realism
+• Enables axle‑based analytics
+• Supports future features:
+◦ Tyre rotation history
+◦ Axle wear analysis
+◦ Fleet compliance audits
+Design Note: This module should load before tyre capture, inspection, or replacement workflows. All downstream tyre data should reference this configuration as immutable truth.

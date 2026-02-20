@@ -1,0 +1,139 @@
+# Tyre Management App – Core Category Reference (Sections 1–4)
+This document consolidates **Categories 1, 2, 3, and 4** into a single structured reference you can **export, print, or adapt directly into dropdown (+/–) logic** for your Tyre Management App (Southern Africa context, Botswana-ready).
+---
+## 1) BRAND (Primary Category)
+**Purpose:** Manufacturer identification, filtering, inventory grouping, and warranty reference.
+**Brand List (Dropdown – Flat List):**
+- Apollo
+- BFGoodrich
+- Bridgestone
+- Continental
+- Cooper
+- CST
+- Dunlop
+- Falken
+- Firestone
+- General
+- Giti
+- Goodyear
+- Hankook
+- Kelly
+- Kumho
+- Maxxis
+- Michelin
+- Nexen
+- Pirelli
+- Sailun
+- Sumitomo
+- Toyo
+- Yokohama
+- Westlake
+**Optional Sub‑Flags (Internal Logic):**
+- Premium / Mid‑Range / Budget
+- Global / Regional / Emerging Market
+- OE (Original Equipment) Friendly
+---
+## 2) CATEGORY / VEHICLE TYPE (Main → Sub → Sub‑Sub)
+**Purpose:** Determines usage intent, construction strength, and legal/safety compatibility.
+### 2.1 Passenger Vehicles
+- Passenger Car Tyres
+- All Season
+- Summer
+- Winter
+- Performance / Ultra High Performance (UHP)
+- Run‑Flat
+### 2.2 SUV / Crossover
+- SUV / Crossover Tyres
+- Highway Terrain (H/T)
+- All Terrain (A/T)
+- Rugged Terrain (R/T)
+- Mud Terrain (M/T)
+**Road / Off‑Road Bias (Informational Field):**
+- H/T → 90% Road / 10% Off‑Road
+- A/T → 50% Road / 50% Off‑Road
+- R/T → 40% Road / 60% Off‑Road
+- M/T → 20% Road / 80% Off‑Road
+### 2.3 4×4 / Off‑Road
+- Dedicated 4×4 Tyres
+- Highway Terrain (H/T)
+- All Terrain (A/T)
+- Mud Terrain (M/T)
+- Extreme Off‑Road / Rock / Desert
+### 2.4 Commercial / Light Truck
+- Light Truck (LT / LVR / C‑Rated)
+- Delivery / Urban Fleet
+- Construction / Hauling
+- Towing / Overland
+### 2.5 Special Purpose
+- EV‑Specific Tyres
+- Trailer / Caravan Tyres
+- Spare / Temporary Tyres
+- Industrial / Agricultural (optional future expansion)
+---
+## 3) SIZE & FITMENT (Hierarchical Technical Category)
+**Purpose:** Physical compatibility with rim, vehicle clearance, load capacity, and safety.
+### 3.1 Tyre Size Format
+**Standard Example:** `265/70R17`
+- **265** → Width (mm)
+- **70** → Aspect Ratio (%)
+- **R** → Radial Construction
+- **17** → Rim Diameter (inches)
+### 3.2 Size Breakdown (Dropdown Logic)
+- Width
+- 175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 305
+- Aspect Ratio
+- 35, 40, 45, 50, 55, 60, 65, 70, 75, 80
+- Construction
+- R (Radial)
+- Rim Diameter
+- 13" – 22"
+### 3.3 Reinforcement & Markings
+- XL → Extra Load
+- LT / C → Commercial / Light Truck
+- RF → Run‑Flat
+- Tubeless / Tube‑Type
+---
+## 4) LOAD INDEX & SPEED RATING (Safety‑Critical Category)
+**Purpose:** Determines **maximum weight capacity** and **safe top speed** of the tyre.
+### 4.1 Load Index (Numeric)
+- Indicates maximum load per tyre (kg)
+**Examples:**
+- 91 → 615 kg
+- 100 → 800 kg
+- 110 → 1,060 kg
+- 120 → 1,400 kg
+- 130 → 1,900 kg
+*(Higher number = higher load capacity)*
+### 4.2 Speed Rating (Alphabetical)
+- Indicates maximum safe speed under rated load
+**Common Ratings:**
+- Q → 160 km/h
+- R → 170 km/h
+- S → 180 km/h
+- T → 190 km/h
+- H → 210 km/h
+- V → 240 km/h
+- W → 270 km/h
+- Y → 300 km/h
+### 4.3 Combined Example
+**`265/70R17 121/118Q`**
+- Size: 265/70R17
+- Load Index: 121 (single) / 118 (dual)
+- Speed Rating: Q (160 km/h)
+### 4.4 Optional Quality Metrics (Advanced Toggle)
+- UTQG Treadwear
+- UTQG Traction
+- UTQG Temperature
+- Noise Rating (EU Label)
+- Wet Grip Class
+---
+## Implementation Notes (App Logic)
+- Enforce **Category → Size → Load/Speed validation** to prevent unsafe combinations
+- Lock Passenger tyres from Commercial load ratings unless explicitly overridden
+- Use Road/Off‑Road bias as **UX guidance**, not a hard restriction
+---
+**This document is designed to be exported as:**
+- Google Docs
+- PDF
+- Excel reference sheet
+- In‑app static reference / tooltip system
