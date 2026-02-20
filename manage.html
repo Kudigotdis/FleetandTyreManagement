@@ -543,6 +543,7 @@
     };
 
     const CompiledMiniReports = []; // Stores { title, desc, items, type, date }
+    let currentPeriod = '2026-02'; // Global Month Filter
 
     function init() {
       const userJson = sessionStorage.getItem('fmis_user');
@@ -553,6 +554,20 @@
       document.getElementById('userGreeting').textContent = `${currentUser.first} ${currentUser.last} · ${currentUser.role}`;
 
       renderAllLists();
+    }
+
+    // --- DATE PICKER LOGIC ---
+    function openDatePicker(section) {
+      const date = prompt("Enter Month (YYYY-MM):", currentPeriod);
+      if (date && /^\d{4}-\d{2}$/.test(date)) {
+        currentPeriod = date;
+        const [y, m] = date.split('-');
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const label = `${months[parseInt(m) - 1]} ${y}`;
+
+        document.querySelectorAll('.month-btn').forEach(btn => btn.textContent = label);
+        renderAllLists();
+      }
     }
 
     // BOTHOFLOW CARD LOGIC
