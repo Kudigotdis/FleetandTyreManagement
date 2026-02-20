@@ -226,7 +226,7 @@
     }
 
     .nested-group.open {
-      block;
+      display: block;
     }
 
     /* REACTIVE BOTTOM NAV (FULL REPORT) */
@@ -357,7 +357,7 @@
       <button class="card-trigger" onclick="toggleCard('vehicles')">
         <span>Vehicle - Status</span>
         <div class="trigger-right">
-          <span class="month-btn" id="month-vehicles">Feb 2026</span>
+          <span class="month-btn" onclick="openDatePicker('vehicles')">Feb 2026</span>
           <span id="arrow-vehicles">▼</span>
         </div>
       </button>
@@ -376,7 +376,7 @@
       <button class="card-trigger" onclick="toggleCard('fuel')">
         <span>Fuel Allocation</span>
         <div class="trigger-right">
-          <span class="month-btn" id="month-fuel">Feb 2026</span>
+          <span class="month-btn" onclick="openDatePicker('fleet')">Feb 2026</span>
           <span id="arrow-fuel">▼</span>
         </div>
       </button>
@@ -411,7 +411,7 @@
       <button class="card-trigger" onclick="toggleCard('tyres')">
         <span>Tyres</span>
         <div class="trigger-right">
-          <span class="month-btn" id="month-tyres">Feb 2026</span>
+          <span class="month-btn" onclick="openDatePicker('tyres')">Feb 2026</span>
           <span id="arrow-tyres">▼</span>
         </div>
       </button>
@@ -428,9 +428,9 @@
     <!-- LEVEL 6: DRIVERS -->
     <div class="compiler-card">
       <button class="card-trigger" onclick="toggleCard('drivers')">
-        <span>Drivers</span>
+        <span>Personnel & Registry</span>
         <div class="trigger-right">
-          <span class="month-btn" id="month-drivers">Feb 2026</span>
+          <span class="month-btn" onclick="openDatePicker('drivers')">Feb 2026</span>
           <span id="arrow-drivers">▼</span>
         </div>
       </button>
@@ -449,7 +449,7 @@
       <button class="card-trigger" onclick="toggleCard('attentions')">
         <span>Attentions</span>
         <div class="trigger-right">
-          <span class="month-btn" id="month-attentions">Feb 2026</span>
+          <span class="month-btn" onclick="openDatePicker('attentions')">Feb 2026</span>
           <span id="arrow-attentions">▼</span>
         </div>
       </button>
@@ -468,7 +468,7 @@
       <button class="card-trigger" onclick="toggleCard('fleet')">
         <span>Fleet View</span>
         <div class="trigger-right">
-          <span class="month-btn" id="month-fleet">Feb 2026</span>
+          <span class="month-btn" onclick="openDatePicker('fleet')">Feb 2026</span>
           <span id="arrow-fleet">▼</span>
         </div>
       </button>
@@ -586,11 +586,10 @@
     function renderVehicles() {
       const list = document.getElementById('list-vehicles');
       list.innerHTML = '';
+      // In a real app, we'd filter by currentPeriod.
       const items = [
-        { id: 'v-today', title: 'Today', count: 8, sub: 'Updated 15 mins ago' },
-        { id: 'v-yest', title: 'Yesterday', count: 8, sub: 'Daily summary' },
-        { id: 'v-wed', title: 'Wed 18 Feb 2026', count: 7, sub: '1 Accident reported' },
-        { id: 'v-tue', title: 'Tue 17 Feb 2026', count: 8, sub: 'Full deployment' }
+        { id: 'v-today', title: 'Daily Status', count: 8, sub: `Active in ${currentPeriod}` },
+        { id: 'v-yest', title: 'Operational Log', count: 8, sub: 'Summary' }
       ];
       items.forEach(item => {
         list.appendChild(createRow('vehicles', item.id, item.title, `${item.count} Vehicles`, item.sub));
@@ -600,8 +599,16 @@
     function renderFuel() {
       const list = document.getElementById('list-fuel');
       list.innerHTML = '';
-      const logs = DataManager.getFuel();
+      const allLogs = DataManager.getFuel();
+      // Filter by currentPeriod (YYYY-MM)
+      const logs = allLogs.filter(l => l.date.startsWith(currentPeriod));
+
       const dates = [...new Set(logs.map(l => l.date))].sort().reverse();
+
+      if (logs.length === 0) {
+        list.innerHTML = '<div style="padding:20px; text-align:center; opacity:0.5; font-size:12px">No logs for this period</div>';
+        return;
+      }
 
       dates.forEach(date => {
         const dayLogs = logs.filter(l => l.date === date);
@@ -613,7 +620,6 @@
           `${totalL.toFixed(1)}L | P${totalP.toFixed(2)} | for ${dayLogs.length} vehicles`,
           'Tap to view vehicles');
 
-        // Wrap row to handle drill-down toggle
         row.onclick = (e) => {
           if (e.target.classList.contains('select-btn')) {
             toggleItem('fuel', dateId);
@@ -690,13 +696,36 @@
     function renderDrivers() {
       const list = document.getElementById('list-drivers');
       list.innerHTML = '';
-      const drivers = DataManager.getUsers().filter(u => u.type === 'driver');
-      const male = drivers.filter(d => d.gender === 'Male').length;
-      const female = drivers.filter(d => d.gender === 'Female').length;
+      const allUsers = DataManager.getUsers();
 
-      list.appendChild(createRow('drivers', 'dr-all', 'Active Drivers', `${drivers.length} Registered`, 'All roles'));
-      list.appendChild(createRow('drivers', 'dr-male', 'Male Staff', `${male} Members`, 'Logistics'));
-      list.appendChild(createRow('drivers', 'dr-female', 'Female Staff', `${female} Members`, 'Administration'));
+      // Categorize as requested: ALL profiles visibility
+      const admins = allUsers.filter(u => u.type === 'admin');
+      const managers = allUsers.filter(u => u.type === 'manager');
+      const drivers = allUsers.filter(u => u.type === 'driver');
+
+      list.appendChild(createRow('drivers', 'staff-admins', 'Admins', `${admins.length} Total`, 'System Control'));
+      list.appendChild(createRow('drivers', 'staff-managers', 'Managers', `${managers.length} Total`, 'Fleet Oversight'));
+      list.appendChild(createRow('drivers', 'staff-drivers', 'Drivers', `${drivers.length} Total`, 'Field Ops'));
+
+      // Individual profiles drill down
+      const nested = document.createElement('div');
+      nested.className = 'nested-group';
+      nested.id = 'nested-staff';
+      allUsers.forEach(u => {
+        nested.appendChild(createRow('drivers', u.id, `${u.first} ${u.last}`, u.role, u.area));
+      });
+
+      const allRow = createRow('drivers', 'staff-all', 'Show All Personnel', `${allUsers.length} Members`, 'Detailed Registry');
+      allRow.onclick = (e) => {
+        if (e.target.classList.contains('select-btn')) {
+          toggleItem('drivers', 'staff-all');
+        } else {
+          nested.style.display = nested.style.display === 'block' ? 'none' : 'block';
+        }
+      };
+
+      list.appendChild(allRow);
+      list.appendChild(nested);
     }
 
     function renderAttentions() {

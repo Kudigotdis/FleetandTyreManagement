@@ -88,6 +88,11 @@ const DataManager = {
   },
   getAttentions() { return JSON.parse(localStorage.getItem('fmis_attentions')); },
 
+  getUserByLogin(first, last) {
+    const all = this.getUsers();
+    return all.find(u => u.first.toLowerCase() === first.toLowerCase() && u.last.toLowerCase() === last.toLowerCase());
+  },
+
   // Method to update tyres
   updateTyre(data) {
     let all = JSON.parse(localStorage.getItem('fmis_tyres'));

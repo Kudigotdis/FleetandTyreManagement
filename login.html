@@ -1,370 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>FMIS — Login</title>
-<script src="DataManager.js"></script>
-<style>
-  :root {
-    --blue: #0866ff;
-    --blue-dark: #0552d4;
-    --white: #ffffff;
-    --grey-bg: #f4f4f4;
-    --grey-mid: #e2e5e9;
-    --grey-border: #d0d3d8;
-    --grey-text: #707070;
-    --black: #111111;
-    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body {
-    font-family: var(--font);
-    background: var(--grey-bg);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Centered in the middle as requested */
-    padding: 20px;
-    overflow: hidden;
-  }
-  .login-wrap {
-    width: 100%;
-    max-width: 420px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: -60px; /* Offset for better vertical centering */
-  }
-  .logo-block {
-    width: 140px;
-    height: 140px;
-    background: var(--white);
-    border: 2px solid var(--grey-border);
-    border-radius: 70px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 40px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
-  .logo-block .logo-text {
-    font-size: 32px;
-    font-weight: 900;
-    color: var(--blue);
-    letter-spacing: -1px;
-  }
-  .logo-block .logo-sub {
-    font-size: 10px;
-    color: var(--grey-text);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FMIS — Login</title>
+  <script src="DataManager.js"></script>
+  <style>
+    :root {
+      --blue: #0866ff;
+      --blue-dark: #0552d4;
+      --white: #ffffff;
+      --grey-bg: #f4f4f4;
+      --grey-mid: #e2e5e9;
+      --grey-border: #d0d3d8;
+      --grey-text: #707070;
+      --black: #111111;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
 
-  .field-group {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .field-wrap {
-    width: 100%;
-    background: var(--white);
-    border: 1.5px solid var(--grey-mid);
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    transition: all 0.2s;
-  }
-  .field-wrap:focus-within {
-    border-color: var(--blue);
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(8,102,255,0.1);
-  }
-  .field-wrap input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-family: var(--font);
-    font-size: 16px;
-    color: var(--black);
-    background: transparent;
-  }
-  .field-wrap input::placeholder {
-    color: #ccc;
-    font-style: italic; /* Aligned left in light grey as requested */
-  }
-  .eye-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--blue);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 0 0 0 10px;
-    font-family: var(--font);
-  }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-  .login-btn {
-    width: 100%;
-    padding: 18px;
-    background: var(--grey-mid);
-    color: var(--white);
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 700;
-    font-family: var(--font);
-    cursor: not-allowed;
-    transition: all 0.2s;
-  }
-  .login-btn.active {
-    background: var(--blue);
-    cursor: pointer;
-  }
-  .login-btn.active:active {
-    transform: scale(0.98);
-  }
+    body {
+      font-family: var(--font);
+      background: var(--grey-bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      /* Centered in the middle as requested */
+      padding: 20px;
+      overflow: hidden;
+    }
 
-  /* Profiles Accordion (at bottom, opens upward) */
-  .profiles-accordion {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--white);
-    border-top: 1px solid var(--grey-mid);
-    z-index: 100;
-    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    display: flex;
-    flex-direction: column;
-    max-height: 80vh;
-  }
-  .profiles-accordion:not(.open) {
-    transform: translateY(calc(100% - 56px));
-  }
-  .profiles-trigger {
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 15px;
-    color: var(--black);
-    cursor: pointer;
-    border-bottom: 1px solid var(--grey-bg);
-  }
-  .profiles-trigger svg {
-    margin-left: 8px;
-    transition: transform 0.3s;
-  }
-  .profiles-accordion.open .profiles-trigger svg {
-    transform: rotate(180deg);
-  }
+    .login-wrap {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: -60px;
+      /* Offset for better vertical centering */
+    }
 
-  .profiles-list {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 30px;
-  }
-  .profile-group-label {
-    padding: 15px 20px 8px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: var(--grey-text);
-    text-transform: uppercase;
-    background: var(--grey-bg);
-  }
-  .profile-item {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--grey-bg);
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .profile-item:active { background: #f0f4ff; }
-  .profile-avatar {
-    width: 40px; height: 40px; border-radius: 20px;
-    background: var(--grey-mid);
-    display: flex; align-items: center; justify-content: center;
-    margin-right: 14px; font-weight: 700; color: var(--grey-text);
-    font-size: 14px;
-  }
-  .profile-info { flex: 1; }
-  .profile-name { font-size: 15px; font-weight: 600; color: var(--black); }
-  .profile-role { font-size: 12px; color: var(--grey-text); margin-top: 2px; }
-  .profile-type {
-    font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 12px;
-    text-transform: uppercase;
-  }
-  .type-admin { background: #fee2e2; color: #991b1b; }
-  .type-manager { background: #e0f2fe; color: #075985; }
-  .type-driver { background: #f3f4f6; color: #374151; }
-  .type-new { background: #dcfce7; color: #166534; }
+    .logo-block {
+      width: 140px;
+      height: 140px;
+      background: var(--white);
+      border: 2px solid var(--grey-border);
+      border-radius: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
 
-  /* Logo Backdrop Overlay */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 90;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-  .overlay.show { opacity: 1; pointer-events: auto; }
-</style>
+    .logo-block .logo-text {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--blue);
+      letter-spacing: -1px;
+    }
+
+    .logo-block .logo-sub {
+      font-size: 10px;
+      color: var(--grey-text);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .field-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .field-wrap {
+      width: 100%;
+      background: var(--white);
+      border: 1.5px solid var(--grey-mid);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .field-wrap:focus-within {
+      border-color: var(--blue);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(8, 102, 255, 0.1);
+    }
+
+    .field-wrap input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: var(--font);
+      font-size: 16px;
+      color: var(--black);
+      background: transparent;
+    }
+
+    .field-wrap input::placeholder {
+      color: #ccc;
+      font-style: italic;
+      /* Aligned left in light grey as requested */
+    }
+
+    .eye-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 0 0 10px;
+      font-family: var(--font);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--grey-mid);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: not-allowed;
+      transition: all 0.2s;
+    }
+
+    .login-btn.active {
+      background: var(--blue);
+      cursor: pointer;
+    }
+
+    .login-btn.active:active {
+      transform: scale(0.98);
+    }
+
+    /* Profiles Accordion (at bottom, opens upward) */
+    .profiles-accordion {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border-top: 1px solid var(--grey-mid);
+      z-index: 100;
+      transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+      display: flex;
+      flex-direction: column;
+      max-height: 80vh;
+    }
+
+    .profiles-accordion:not(.open) {
+      transform: translateY(calc(100% - 56px));
+    }
+
+    .profiles-trigger {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--black);
+      cursor: pointer;
+      border-bottom: 1px solid var(--grey-bg);
+    }
+
+    .profiles-trigger svg {
+      margin-left: 8px;
+      transition: transform 0.3s;
+    }
+
+    .profiles-accordion.open .profiles-trigger svg {
+      transform: rotate(180deg);
+    }
+
+    .profiles-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 30px;
+    }
+
+    .profile-group-label {
+      padding: 15px 20px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--grey-text);
+      text-transform: uppercase;
+      background: var(--grey-bg);
+    }
+
+    .profile-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--grey-bg);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .profile-item:active {
+      background: #f0f4ff;
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      background: var(--grey-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 14px;
+      font-weight: 700;
+      color: var(--grey-text);
+      font-size: 14px;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    .profile-role {
+      font-size: 12px;
+      color: var(--grey-text);
+      margin-top: 2px;
+    }
+
+    .profile-type {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+
+    .type-admin {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .type-manager {
+      background: #e0f2fe;
+      color: #075985;
+    }
+
+    .type-driver {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .type-new {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    /* Logo Backdrop Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="overlay" id="overlay" onclick="toggleProfiles()"></div>
+  <div class="overlay" id="overlay" onclick="toggleProfiles()"></div>
 
-<div class="login-wrap">
-  <div class="logo-block">
-    <div class="logo-text">FMIS</div>
-    <div class="logo-sub">FLEET BOTSWANA</div>
-  </div>
-
-  <div class="field-group">
-    <div class="field-wrap">
-      <input type="text" id="firstName" placeholder="First Name" oninput="validate()">
+  <div class="login-wrap">
+    <div class="logo-block">
+      <div class="logo-text">FMIS</div>
+      <div class="logo-sub">FLEET BOTSWANA</div>
     </div>
-    <div class="field-wrap">
-      <input type="text" id="surname" placeholder="Surname" oninput="validate()">
+
+    <div class="field-group">
+      <div class="field-wrap">
+        <input type="text" id="firstName" placeholder="First Name" oninput="validate()">
+      </div>
+      <div class="field-wrap">
+        <input type="text" id="surname" placeholder="Surname" oninput="validate()">
+      </div>
+      <div class="field-wrap">
+        <input type="password" id="password" placeholder="Password" oninput="validate()">
+        <button class="eye-btn" onclick="togglePw()" id="eyeBtn">View</button>
+      </div>
     </div>
-    <div class="field-wrap">
-      <input type="password" id="password" placeholder="Password" oninput="validate()">
-      <button class="eye-btn" onclick="togglePw()" id="eyeBtn">View</button>
+
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">Login</button>
+  </div>
+
+  <div class="profiles-accordion" id="pAccordion">
+    <div class="profiles-trigger" onclick="toggleProfiles()">
+      PROFILES
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </div>
+    <div class="profiles-list" id="pList">
+      <!-- Demo Section -->
+      <div class="profile-group-label">Demo</div>
+      <div id="demoProfiles"></div>
+
+      <!-- Regular Section -->
+      <div class="profile-group-label">Demo Profiles (Vehicle Assigned)</div>
+      <div id="regularProfiles"></div>
+
+      <!-- Test Section -->
+      <div class="profile-group-label">Test Profiles (No Vehicle Assigned)</div>
+      <div id="testProfiles"></div>
     </div>
   </div>
 
-  <button class="login-btn" id="loginBtn" onclick="doLogin()">Login</button>
-</div>
-
-<div class="profiles-accordion" id="pAccordion">
-  <div class="profiles-trigger" onclick="toggleProfiles()">
-    PROFILES
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-  </div>
-  <div class="profiles-list" id="pList">
-    <!-- Demo Section -->
-    <div class="profile-group-label">Demo</div>
-    <div id="demoProfiles"></div>
-    
-    <!-- Regular Section -->
-    <div class="profile-group-label">Demo Profiles (Vehicle Assigned)</div>
-    <div id="regularProfiles"></div>
-
-    <!-- Test Section -->
-    <div class="profile-group-label">Test Profiles (No Vehicle Assigned)</div>
-    <div id="testProfiles"></div>
-  </div>
-</div>
-
-<script>
-  function validate() {
-    const fn = document.getElementById('firstName').value.trim();
-    const sn = document.getElementById('surname').value.trim();
-    const pw = document.getElementById('password').value.trim();
-    const btn = document.getElementById('loginBtn');
-    if (fn && sn && pw) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
+  <script>
+    function validate() {
+      const fn = document.getElementById('firstName').value.trim();
+      const sn = document.getElementById('surname').value.trim();
+      const pw = document.getElementById('password').value.trim();
+      const btn = document.getElementById('loginBtn');
+      if (fn && sn && pw) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
     }
-  }
 
-  function togglePw() {
-    const p = document.getElementById('password');
-    const b = document.getElementById('eyeBtn');
-    if (p.type === 'password') {
-      p.type = 'text';
-      b.textContent = 'Hide';
-    } else {
-      p.type = 'password';
-      b.textContent = 'View';
+    function togglePw() {
+      const p = document.getElementById('password');
+      const b = document.getElementById('eyeBtn');
+      if (p.type === 'password') {
+        p.type = 'text';
+        b.textContent = 'Hide';
+      } else {
+        p.type = 'password';
+        b.textContent = 'View';
+      }
     }
-  }
 
-  function toggleProfiles() {
-    document.getElementById('pAccordion').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('show');
-  }
+    function toggleProfiles() {
+      document.getElementById('pAccordion').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('show');
+    }
 
-  function renderProfiles() {
-    const users = DataManager.getUsers();
-    const demoDiv = document.getElementById('demoProfiles');
-    const regDiv = document.getElementById('regularProfiles');
-    const testDiv = document.getElementById('testProfiles');
+    function renderProfiles() {
+      const users = DataManager.getUsers();
+      const demoDiv = document.getElementById('demoProfiles');
+      const regDiv = document.getElementById('regularProfiles');
+      const testDiv = document.getElementById('testProfiles');
 
-    // 1. Demo (The 3 specific ones)
-    const demos = users.filter(u => ['Aobakwe', 'Kabelo', 'Tumelo'].includes(u.first));
-    // Note: User requested Aobakwe Admin, Manager, Driver demo. But our generated list has Karate Admin, Mogorosi Manager.
-    // I'll stick to the actual generated users for functionality.
-    
-    users.forEach(u => {
-      const item = `
+      demoDiv.innerHTML = '';
+      regDiv.innerHTML = '';
+      testDiv.innerHTML = '';
+
+      users.forEach(u => {
+        const item = `
         <div class="profile-item" onclick="quickLogin('${u.first}', '${u.last}')">
           <div class="profile-avatar">${u.first[0]}${u.last[0]}</div>
           <div class="profile-info">
             <div class="profile-name">${u.first} ${u.last}</div>
             <div class="profile-role">${u.role} · ${u.area}</div>
           </div>
-          <span class="profile-type type-${u.hasVehicle ? u.type : 'new'}">${u.hasVehicle ? u.type : 'New'}</span>
+          <span class="profile-type type-${u.type}">${u.type}</span>
         </div>
       `;
 
-      if (u.id === 'u1' || u.id === 'u2' || u.id === 'u3') {
-        demoDiv.innerHTML += item;
-      } else if (u.hasVehicle) {
-        regDiv.innerHTML += item;
-      } else {
-        testDiv.innerHTML += item;
-      }
-    });
-  }
+        if (u.id === 'u1' || u.id === 'u2' || u.id === 'u3') {
+          demoDiv.innerHTML += item;
+        } else if (u.hasVehicle) {
+          regDiv.innerHTML += item;
+        } else {
+          testDiv.innerHTML += item;
+        }
+      });
+    }
 
-  function quickLogin(first, last) {
-    const user = DataManager.getUserByLogin(first, last);
-    if (user) {
+    function quickLogin(first, last) {
+      const user = DataManager.getUserByLogin(first, last);
+      if (user) {
+        sessionStorage.setItem('fmis_user', JSON.stringify(user));
+        window.location.href = 'index.html';
+      }
+    }
+
+    function doLogin() {
+      const fn = document.getElementById('firstName').value.trim();
+      const sn = document.getElementById('surname').value.trim();
+      const pw = document.getElementById('password').value.trim();
+
+      if (!fn || !sn || !pw) return;
+
+      // Logic for password based roles as requested:
+      // "if the user types in Driver they login with Driver view"
+      let user = DataManager.getUserByLogin(fn, sn);
+
+      if (!user) {
+        // Fallback/Create dummy for unregistered names during demo
+        user = { first: fn, last: sn, type: pw.toLowerCase().includes('manager') ? 'manager' : (pw.toLowerCase().includes('admin') ? 'admin' : 'driver'), role: 'Special Access', hasVehicle: true };
+      } else {
+        // If password specifies a role override for demo sanity
+        if (pw.toLowerCase() === 'admin') user.type = 'admin';
+        if (pw.toLowerCase() === 'manager') user.type = 'manager';
+        if (pw.toLowerCase() === 'driver') user.type = 'driver';
+      }
+
       sessionStorage.setItem('fmis_user', JSON.stringify(user));
       window.location.href = 'index.html';
     }
-  }
 
-  function doLogin() {
-    const fn = document.getElementById('firstName').value.trim();
-    const sn = document.getElementById('surname').value.trim();
-    const pw = document.getElementById('password').value.trim();
-    
-    if (!fn || !sn || !pw) return;
-
-    // Logic for password based roles as requested:
-    // "if the user types in Driver they login with Driver view"
-    let user = DataManager.getUserByLogin(fn, sn);
-    
-    if (!user) {
-      // Fallback/Create dummy for unregistered names during demo
-      user = { first: fn, last: sn, type: pw.toLowerCase().includes('manager') ? 'manager' : (pw.toLowerCase().includes('admin') ? 'admin' : 'driver'), role: 'Special Access', hasVehicle: true };
-    } else {
-      // If password specifies a role override for demo sanity
-      if (pw.toLowerCase() === 'admin') user.type = 'admin';
-      if (pw.toLowerCase() === 'manager') user.type = 'manager';
-      if (pw.toLowerCase() === 'driver') user.type = 'driver';
-    }
-
-    sessionStorage.setItem('fmis_user', JSON.stringify(user));
-    window.location.href = 'index.html';
-  }
-
-  window.onload = renderProfiles;
-</script>
+    window.onload = renderProfiles;
+  </script>
 </body>
+
 </html>
